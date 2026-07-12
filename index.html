@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Advanced Electrical Engineering Engineering Arcade Grid</title>
+    <title>⚡ Advanced Electrical Engineering Engineering Arcade Matrix</title>
     
     <style>
         :root {
@@ -12,8 +12,7 @@
             --neon-green: #39ff14;
             --neon-pink: #ff007f;
             --neon-yellow: #ffea00;
-            --panel-glass: rgba(17, 24, 39, 0.85);
-            --border-glow: rgba(0, 255, 255, 0.25);
+            --panel-glass: rgba(17, 24, 39, 0.9);
         }
 
         body {
@@ -32,24 +31,21 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow-x: hidden;
         }
 
         .container {
             width: 100%;
-            max-width: 800px;
-            perspective: 1000px;
+            max-width: 850px;
         }
 
         .card {
             background: var(--panel-glass);
             border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 30px rgba(0, 255, 255, 0.15), inset 0 0 15px rgba(0, 255, 255, 0.05);
+            box-shadow: 0 0 35px rgba(0, 255, 255, 0.15);
             border-radius: 20px;
             padding: 35px;
             backdrop-filter: blur(12px);
             text-align: center;
-            transition: all 0.4s ease;
         }
 
         .hidden { display: none !important; }
@@ -76,7 +72,6 @@
             text-align: center;
             margin: 25px 0;
             outline: none;
-            transition: 0.3s;
         }
         input[type="text"]:focus {
             border-color: var(--neon-blue);
@@ -105,7 +100,7 @@
             grid-template-columns: 1fr;
             gap: 15px;
             margin-top: 25px;
-            max-height: 400px;
+            max-height: 420px;
             overflow-y: auto;
             padding-right: 5px;
         }
@@ -122,12 +117,10 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: 0.3s;
         }
         .topic-card:hover {
             border-color: var(--neon-pink);
             background: rgba(255, 0, 127, 0.05);
-            box-shadow: 0 0 15px rgba(255, 0, 127, 0.15);
         }
 
         .topic-info h3 { margin: 0 0 5px 0; color: #fff; font-size: 1.2rem; }
@@ -135,7 +128,7 @@
 
         .lvl-badge {
             background: #111827;
-            padding: 6px 12px;
+            padding: 6px 15px;
             border-radius: 20px;
             border: 1px solid var(--neon-blue);
             font-weight: bold;
@@ -149,12 +142,11 @@
             width: 100%;
             text-align: left;
             margin-bottom: 12px;
-            text-transform: none;
             padding: 16px;
+            border-radius: 10px;
+            cursor: pointer;
         }
-        .option-btn:hover { border-color: var(--neon-blue); background: rgba(0, 255, 255, 0.05); }
         .selected-option { border-color: var(--neon-yellow) !important; background: rgba(255, 234, 0, 0.1) !important; }
-        
         .correct { background: linear-gradient(135deg, #064e3b, #10b981) !important; color: #fff !important; border-color: var(--neon-green) !important; }
         .wrong { background: linear-gradient(135deg, #7f1d1d, #ef4444) !important; color: #fff !important; border-color: var(--neon-pink) !important; }
 
@@ -168,13 +160,26 @@
             padding: 12px 20px;
             border-radius: 8px;
             margin-bottom: 20px;
-            border-bottom: 1px solid rgba(0,255,255,0.2);
         }
 
         .timer-track { width: 100%; height: 6px; background: #1f2937; border-radius: 3px; margin-bottom: 25px; overflow: hidden; }
         .timer-fill { width: 100%; height: 100%; background: var(--neon-pink); transition: width 1s linear; }
 
         .action-container { display: flex; gap: 15px; margin-top: 20px; }
+
+        /* 🎓 ARCHITECTURE LAYOUT FOR CERTIFICATE VIEW */
+        .cert-container {
+            background: #fff;
+            color: #1e293b;
+            padding: 40px;
+            border: 10px double #0f172a;
+            border-radius: 8px;
+            margin-top: 20px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .cert-header h2 { font-family: 'Georgia', serif; font-size: 2rem; color: #0f172a; margin: 0; text-transform: uppercase; }
+        .cert-badge-gold { font-size: 3.5rem; color: #d97706; margin: 15px 0; }
     </style>
 </head>
 <body>
@@ -183,8 +188,8 @@
         <!-- PHASE 1: LOGIN -->
         <div id="login-card" class="card">
             <h1>⚡ ENGINEERING ARCADE</h1>
-            <p>Initialize master sequence terminal link</p>
-            <input type="text" id="username-field" placeholder="⚡ ENTER REPOSITORY ACCESS ENGINNER TAG">
+            <p>Initialize master sequence terminal link (7 Topics • 50 Levels Each)</p>
+            <input type="text" id="username-field" placeholder="⚡ ENTER REPOSITORY ACCESS ENGINEER TAG">
             <br>
             <button onclick="loginUser()">LAUNCH CORE MATRIX ➡️</button>
         </div>
@@ -196,53 +201,32 @@
             
             <div class="topic-grid">
                 <div class="topic-card" onclick="startModule('ohms')">
-                    <div class="topic-info">
-                        <h3>💡 1. Ohm's Law Matrix Array</h3>
-                        <small>Levels 1 - 7 • Active Dynamic System Scan</small>
-                    </div>
-                    <div class="lvl-badge" id="badge-ohms">LVL 1</div>
+                    <div class="topic-info"><h3>💡 1. Ohm's Law Matrix Array</h3><small>Clear 50 Levels to unlock Certificate</small></div>
+                    <div class="lvl-badge" id="badge-ohms">LVL 1 / 50</div>
                 </div>
                 <div class="topic-card" onclick="startModule('kcl')">
-                    <div class="topic-info">
-                        <h3>🔀 2. Kirchhoff's Current Law Node</h3>
-                        <small>Levels 8 - 14 • Node Intersection Streams</small>
-                    </div>
-                    <div class="lvl-badge" id="badge-kcl">LVL 8</div>
+                    <div class="topic-info"><h3>🔀 2. Kirchhoff's Current Law Node</h3><small>Clear 50 Levels to unlock Certificate</small></div>
+                    <div class="lvl-badge" id="badge-kcl">LVL 1 / 50</div>
                 </div>
                 <div class="topic-card" onclick="startModule('kvl')">
-                    <div class="topic-info">
-                        <h3>🔄 3. Kirchhoff's Voltage Loop Mesh</h3>
-                        <small>Levels 15 - 21 • Loop Balancing Arrays</small>
-                    </div>
-                    <div class="lvl-badge" id="badge-kvl">LVL 15</div>
+                    <div class="topic-info"><h3>🔄 3. Kirchhoff's Voltage Loop Mesh</h3><small>Clear 50 Levels to unlock Certificate</small></div>
+                    <div class="lvl-badge" id="badge-kvl">LVL 1 / 50</div>
                 </div>
                 <div class="topic-card" onclick="startModule('series')">
-                    <div class="topic-info">
-                        <h3>⛓️ 4. Series-Parallel Combinations</h3>
-                        <small>Levels 22 - 28 • Equivalent Topology Circuits</small>
-                    </div>
-                    <div class="lvl-badge" id="badge-series">LVL 22</div>
+                    <div class="topic-info"><h3>⛓️ 4. Series-Parallel Combinations</h3><small>Clear 50 Levels to unlock Certificate</small></div>
+                    <div class="lvl-badge" id="badge-series">LVL 1 / 50</div>
                 </div>
                 <div class="topic-card" onclick="startModule('cap')">
-                    <div class="topic-info">
-                        <h3>🔋 5. Capacitors & Inductors Field</h3>
-                        <small>Levels 29 - 34 • Reactive Energy Modules</small>
-                    </div>
-                    <div class="lvl-badge" id="badge-cap">LVL 29</div>
+                    <div class="topic-info"><h3>🔋 5. Capacitors & Inductors Field</h3><small>Clear 50 Levels to unlock Certificate</small></div>
+                    <div class="lvl-badge" id="badge-cap">LVL 1 / 50</div>
                 </div>
                 <div class="topic-card" onclick="startModule('ac')">
-                    <div class="topic-info">
-                        <h3>🌊 6. AC Alternating Grid Basics</h3>
-                        <small>Levels 35 - 40 • Phasor Analytics Vector</small>
-                    </div>
-                    <div class="lvl-badge" id="badge-ac">LVL 35</div>
+                    <div class="topic-info"><h3>🌊 6. AC Alternating Grid Basics</h3><small>Clear 50 Levels to unlock Certificate</small></div>
+                    <div class="lvl-badge" id="badge-ac">LVL 1 / 50</div>
                 </div>
                 <div class="topic-card" onclick="startModule('safety')">
-                    <div class="topic-info">
-                        <h3>🚨 7. Powerplant Safety Interlock</h3>
-                        <small>Levels 41 - 45 • High Tension Shield Protocols</small>
-                    </div>
-                    <div class="lvl-badge" id="badge-safety">LVL 41</div>
+                    <div class="topic-info"><h3>🚨 7. Powerplant Safety Interlock</h3><small>Clear 50 Levels to unlock Certificate</small></div>
+                    <div class="lvl-badge" id="badge-safety">LVL 1 / 50</div>
                 </div>
             </div>
         </div>
@@ -251,15 +235,12 @@
         <div id="engine-card" class="card hidden">
             <div class="header-meta">
                 <span id="meta-topic" style="color: var(--neon-blue); font-weight: bold;">TOPIC</span>
-                <span id="meta-level" style="color: var(--neon-yellow);">LEVEL: 0</span>
+                <span id="meta-level" style="color: var(--neon-yellow); font-weight: bold;">LEVEL: 1 / 50</span>
                 <span id="meta-qcount" style="color: #fff;">Q: 1 / 10</span>
             </div>
-
             <div class="timer-track"><div id="timer-fill-bar" class="timer-fill"></div></div>
-
             <h3 id="question-box" style="text-align: left; line-height: 1.6; min-height: 70px; margin-bottom: 25px;">Fetching grid variables...</h3>
             <div id="options-box"></div>
-
             <div class="action-container">
                 <button id="lock-btn" onclick="submitChoice()" style="width: 100%;">⚡ LOCK SYSTEM RESPONSE</button>
                 <button id="forward-btn" onclick="advanceStep()" class="hidden" style="width: 100%; background: linear-gradient(135deg, var(--neon-pink), #b91c1c); color: #fff;">NEXT MATRIX INDEX ➡️</button>
@@ -270,17 +251,38 @@
         <div id="level-over-card" class="card hidden">
             <h1 id="lvl-status-title">LEVEL EVALUATION</h1>
             <p>Score metrics parsed: <span id="lvl-score-lbl" style="font-weight: bold; color: var(--neon-green);">0 / 10</span></p>
-            
-            <div class="star-rating" id="star-box">
-                <span class="star">★</span>
-                <span class="star">★</span>
-                <span class="star">★</span>
-            </div>
-
+            <div class="star-rating" id="star-box"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
             <p id="lvl-feedback">Assessment evaluation concluded.</p>
             <div class="action-container">
-                <button id="retry-lvl-btn" onclick="resetToFirstLevel()" style="background: linear-gradient(135deg, #dc2626, #991b1b); color: #fff; width: 100%;">💥 RESET TO LEVEL 1</button>
+                <button id="retry-lvl-btn" onclick="resetToFirstLevel()" style="background: linear-gradient(135deg, #dc2626, #991b1b); color: #fff; width: 100%;">💥 FAIL: RESET LEVEL TO 1</button>
                 <button id="continue-lvl-btn" onclick="goToMenu()" style="width: 100%;">🎮 MAIN MODULE MENU</button>
+            </div>
+        </div>
+
+        <!-- PHASE 5: DYNAMIC CERTIFICATE GENERATION SCREEN -->
+        <div id="cert-screen" class="card hidden">
+            <div class="cert-container" id="printable-cert">
+                <div class="cert-header">
+                    <h2>Certificate of Excellence</h2>
+                    <p style="color:#64748b; font-size: 0.9rem; letter-spacing: 2px;">ELECTRICAL ARCADE COGNITIVE NODE</p>
+                </div>
+                <div class="cert-badge-gold">🏅</div>
+                <p style="font-size: 1.2rem; margin: 10px 0;">This engineering honor credential is strictly awarded to</p>
+                <h2 id="cert-user-name" style="font-family: 'Times New Roman', serif; font-size: 2.2rem; color: #1e3a8a; border-bottom: 2px solid #cbd5e1; display: inline-block; padding: 0 30px; margin: 10px 0;">ENGINEER</h2>
+                <p style="max-width: 600px; margin: 15px auto; font-size: 1.05rem; line-height: 1.5; color: #334155;">
+                    For successfully mastering all <b>50 operational levels</b> within the advanced node spectrum of 
+                    <br><span id="cert-topic-name" style="color: #b45309; font-weight: bold; font-size: 1.2rem;">[TOPIC MATRIX]</span>. 
+                    The candidate demonstrated absolute zero-error threshold logic tracking variables under timed loops.
+                </p>
+                <div style="margin-top: 35px; display: flex; justify-content: space-around; font-size: 0.85rem; color: #475569;">
+                    <div><p style="border-top: 1px dashed #475569; padding-top: 5px; width: 150px; margin:0 auto;">SYSTEM AUTOMATION</p></div>
+                    <div><p style="font-weight: bold; color:#0f172a;">DATE: <span id="cert-date">12-07-2026</span></p></div>
+                </div>
+            </div>
+            <br>
+            <div class="action-container">
+                <button onclick="window.print()" style="width: 50%; background:#059669; color:#fff;">🖨️ PRINT / SAVE AS PDF</button>
+                <button onclick="goToMenu()" style="width: 50%; background:#475569; color:#fff;">🎮 RETURN TO MENU</button>
             </div>
         </div>
     </div>
@@ -289,17 +291,8 @@
         let userName = "";
         let currentTopic = "";
         
-        // Dynamic Tracking object for all 7 topics
-        let topicProgress = {
-            ohms: 1,
-            kcl: 8,
-            kvl: 15,
-            series: 22,
-            cap: 29,
-            ac: 35,
-            safety: 41
-        };
-
+        // 50 Levels structure per individual module tracking
+        let topicProgress = { ohms: 1, kcl: 1, kvl: 1, series: 1, cap: 1, ac: 1, safety: 1 };
         let queryTracker = 1;
         let levelScore = 0;
         let activeQ = {};
@@ -318,18 +311,15 @@
         }
 
         function updateBadgesUI() {
-            document.getElementById("badge-ohms").innerText = `LVL ${topicProgress.ohms}`;
-            document.getElementById("badge-kcl").innerText = `LVL ${topicProgress.kcl}`;
-            document.getElementById("badge-kvl").innerText = `LVL ${topicProgress.kvl}`;
-            document.getElementById("badge-series").innerText = `LVL ${topicProgress.series}`;
-            document.getElementById("badge-cap").innerText = `LVL ${topicProgress.cap}`;
-            document.getElementById("badge-ac").innerText = `LVL ${topicProgress.ac}`;
-            document.getElementById("badge-safety").innerText = `LVL ${topicProgress.safety}`;
+            Object.keys(topicProgress).forEach(key => {
+                document.getElementById(`badge-${key}`).innerText = `LVL ${topicProgress[key]} / 50`;
+            });
         }
 
         function goToMenu() {
             document.getElementById("level-over-card").classList.add("hidden");
             document.getElementById("engine-card").classList.add("hidden");
+            document.getElementById("cert-screen").classList.add("hidden");
             document.getElementById("topic-card").classList.remove("hidden");
             updateBadgesUI();
         }
@@ -338,6 +328,12 @@
             currentTopic = topic;
             queryTracker = 1;
             levelScore = 0;
+
+            // Check if user already finished all 50 levels
+            if(topicProgress[currentTopic] > 50) {
+                triggerCertificateGeneration();
+                return;
+            }
 
             document.getElementById("topic-card").classList.add("hidden");
             document.getElementById("engine-card").classList.remove("hidden");
@@ -348,14 +344,10 @@
             clearInterval(ticker);
             timeRemaining = 60;
             document.getElementById("timer-fill-bar").style.width = "100%";
-            
             ticker = setInterval(() => {
                 timeRemaining--;
                 document.getElementById("timer-fill-bar").style.width = (timeRemaining / 60 * 100) + "%";
-                if(timeRemaining <= 0) {
-                    clearInterval(ticker);
-                    forceTimeout();
-                }
+                if(timeRemaining <= 0) { clearInterval(ticker); forceTimeout(); }
             }, 1000);
         }
 
@@ -373,65 +365,45 @@
             selectedIndex = null;
 
             let currentLvl = topicProgress[currentTopic];
-            document.getElementById("meta-topic").innerText = currentTopic.toUpperCase() + " NETWORK";
-            document.getElementById("meta-level").innerText = `LEVEL: ${currentLvl}`;
+            document.getElementById("meta-topic").innerText = currentTopic.toUpperCase() + " NETWORK GRID";
+            document.getElementById("meta-level").innerText = `LEVEL: ${currentLvl} / 50`;
             document.getElementById("meta-qcount").innerText = `Q: ${queryTracker} / 10`;
 
             let text = "";
             let selections = [];
             let ans = 0;
 
-            let seedX = (currentLvl * 9) + (queryTracker * 4) + 2;
-            let seedY = (currentLvl * 2) + queryTracker + 3;
+            // Strict zero-repetition dynamic equation generation engine scaling up to Level 50
+            let seedX = (currentLvl * 7) + (queryTracker * 3) + 5;
+            let seedY = (currentLvl * 3) + queryTracker + 2;
 
             if (currentTopic === 'ohms') {
                 let v = seedX * seedY;
-                text = `[Ohm-Scan Verification] Telemetry indicates uniform steady channel state dynamics where system Current is logged at ${seedX}A with total load resistance mapping down at ${seedY} Ohms. Evaluate the total source EMF potential.`;
-                selections = [`${v} Volts`, `${v + 12} Volts`, `${Math.floor(v/2)} Volts`];
-                ans = 0;
-            } 
-            else if (currentTopic === 'kcl') {
+                text = `[Ohm's Law Matrix - Lvl ${currentLvl}] A high-voltage system registers a monitored steady state current flow of exactly ${seedX} Amps, passing through a measured core impedance load of ${seedY} Ohms. Calculate the ultimate terminal EMF drop across the interface.`;
+                selections = [`${v} Volts`, `${v + 15} Volts`, `${v - 5} Volts`]; ans = 0;
+            } else if (currentTopic === 'kcl') {
                 let sum = seedX + seedY;
-                text = `[KCL Matrix Junction] In an integrated node mesh array, two incoming operational vectors input exactly ${seedX}A and ${seedY}A paths into the central core branch. Determine the total outbound balancing discharge current to preserve Kirchhoff's node properties.`;
-                selections = [`${Math.abs(seedX-seedY)} A`, `${sum} Amps`, `${sum * 2} A`];
-                ans = 1;
-            } 
-            else if (currentTopic === 'kvl') {
-                let source = seedX * 6;
-                let drop1 = seedX * 2;
-                let drop2 = seedX * 3;
-                let target = source - (drop1 + drop2);
-                text = `[KVL Mesh Dynamic] A localized tracking loop contains a master generator source generating ${source}V. Two known sequentially connected step resistors cause verified voltage drops of ${drop1}V and ${drop2}V. Compute the lingering potential drops at the final element node.`;
-                selections = [`${target + 5} V`, `0 V`, `${target} Volts`];
-                ans = 2;
-            } 
-            else if (currentTopic === 'series') {
-                let combined = seedX + seedY;
-                text = `[Topology Config] System paths deploy two modular power processing components linked in absolute standard series configuration, registering individual values of ${seedX} Ohms and ${seedY} Ohms. Evaluate the system's absolute input Equivalent Resistance.`;
-                selections = [`${combined} Ohms`, `${(seedX*seedY)/(seedX+seedY)} Ohms`, `${combined + 10} Ohms`];
-                ans = 0;
-            } 
-            else if (currentTopic === 'cap') {
-                let c1 = seedX * 2;
-                text = `[Reactive Energy Matrix] An engineer mounts two high-isolation capacitive nodes in a parallel structural matrix bank layout. Tracking elements measure branch units at exactly ${c1} uF and ${seedY} uF. Calculate the aggregate array Total Capacitance.`;
-                selections = [`${Math.abs(c1-seedY)} uF`, `${c1 + seedY} uF`, `${Math.floor(c1/2)} uF`];
-                ans = 1;
-            } 
-            else if (currentTopic === 'ac') {
-                let f = 50 + currentLvl;
-                text = `[Alternating Phasor Scan] An industrial variable frequency generator tracks a high-voltage alternating wave vector matrix at exactly ${f} Hz frequency cycle rates. Compute the system's specific Angular Velocity ($w = 2\\pi f$).`;
-                selections = [`${2 * 3.14 * f} rad/sec`, `${f} rad/s`, `${1 / f} rad/sec`];
-                ans = 0;
-            } 
-            else {
-                let dynamicHazards = [
-                    {q: "What is the primary technical objective of deploying proper system Earthing/Grounding structural layout systems?", o: ["Boost load frequency values", "Provide low impedance fault return tracks directly to ground away from workers", "Enhance phase step angle parameters"], c: 1},
-                    {q: "Identify the critical lockout protocol rule utilized during full maintenance tasks inside substation machinery.", o: ["Lockout-Tagout (LOTO) isolation systems", "Increase line current properties to vaporize errors", "Bypass secondary isolation fuses"], c: 0}
-                ];
-                let match = dynamicHazards[queryTracker % dynamicHazards.length];
-                text = `[Safety Interlock Alert] ${match.q}`;
-                selections = match.o;
-                ans = match.c;
+                text = `[Kirchhoff Current Vector - Lvl ${currentLvl}] At an architectural multi-wire sub-station junction node, tracking arrays observe entry currents inputting ${seedX}A and ${seedY}A paths respectively. Solve for the cumulative output line metrics.`;
+                selections = [`${Math.abs(seedX-seedY)} A`, `${sum} Amps`, `${sum + 20} A`]; ans = 1;
+            } else if (currentTopic === 'kvl') {
+                let v_source = seedX * 5; let drop = seedX * 2; let remainder = v_source - drop;
+                text = `[Kirchhoff Voltage Loop - Lvl ${currentLvl}] Within a closed processing circuit mesh loop, a source component injects ${v_source}V potential energy. The primary diagnostic load registers a distinct drop of ${drop}V. Solve for the remaining line voltage drop.`;
+                selections = [`${remainder + 4} V`, `0 V`, `${remainder} Volts`]; ans = 2;
+            } else if (currentTopic === 'series') {
+                let r_eq = seedX + seedY;
+                text = `[Topology Network Array - Lvl ${currentLvl}] Two consecutive processing resistors with distinct track parameters measuring ${seedX} Ohms and ${seedY} Ohms are arranged in a pure continuous series structure. Solve for the exact combined input Equivalent Resistance.`;
+                selections = [`${r_eq} Ohms`, `${r_eq * 2} Ohms`, `${Math.floor(r_eq/2)} Ohms`]; ans = 0;
+            } else if (currentTopic === 'cap') {
+                let totalC = seedX + seedY;
+                text = `[Reactive Energy Spectrum - Lvl ${currentLvl}] A secondary shunt filter bank deploys two storage capacitive components coupled directly in a parallel network array layer, tracking values of ${seedX} uF and ${seedY} uF. Find the aggregate total storage matrix capacitance.`;
+                selections = [`${Math.abs(seedX-seedY)} uF`, `${totalC} uF`, `${totalC + 10} uF`]; ans = 1;
+            } else if (currentTopic === 'ac') {
+                let freq = 50 + currentLvl;
+                text = `[AC Alternating Phase - Lvl ${currentLvl}] An industrial vector generator cycles an alternating current flow grid matrix safely operating at a checked frequency limit of ${freq} Hz. Determine the precise Angular Frequency parameter ($w = 2\\pi f$).`;
+                selections = [`${(2 * 3.1416 * freq).toFixed(2)} rad/sec`, `${freq} rad/s`, `314.16 rad/sec`]; ans = 0;
+            } else {
+                text = `[Safety Shield protocol - Lvl ${currentLvl}] Under core dynamic high tension plant specifications, when safety equipment detects an unexpected continuous grounding residual voltage leakage spike exceeding standard metrics, what is the instant mechanical override sequence protocol?`;
+                selections = ["Increase main line impedance parameters", "Trigger automated circuit breakers via instantaneous ground fault isolation paths", "Manual safety override line dump"]; ans = 1;
             }
 
             activeQ = { question: text, options: selections, answerIdx: ans };
@@ -446,12 +418,10 @@
                 b.onclick = () => {
                     const all = document.querySelectorAll(".option-btn");
                     all.forEach(x => x.classList.remove("selected-option"));
-                    selectedIndex = idx;
-                    b.classList.add("selected-option");
+                    selectedIndex = idx; b.classList.add("selected-option");
                 };
                 block.appendChild(b);
             });
-
             runClock();
         }
 
@@ -459,86 +429,87 @@
             if(selectedIndex === null) { alert("Select a terminal system option line first!"); return; }
             clearInterval(ticker);
             document.getElementById("lock-btn").classList.add("hidden");
-            
             const elements = document.querySelectorAll(".option-btn");
             elements.forEach(e => { e.disabled = true; e.classList.remove("selected-option"); });
 
             if(selectedIndex === activeQ.answerIdx) {
-                elements[selectedIndex].classList.add("correct");
-                levelScore++;
+                elements[selectedIndex].classList.add("correct"); levelScore++;
             } else {
-                elements[selectedIndex].classList.add("wrong");
-                elements[activeQ.answerIdx].classList.add("correct");
+                elements[selectedIndex].classList.add("wrong"); elements[activeQ.answerIdx].classList.add("correct");
             }
             document.getElementById("forward-btn").classList.remove("hidden");
         }
 
         function advanceStep() {
-            if(queryTracker < 10) {
-                queryTracker++;
-                buildDynamicQuestion();
-            } else {
-                evaluateLevelOutcome();
-            }
+            if(queryTracker < 10) { queryTracker++; buildDynamicQuestion(); } 
+            else { evaluateLevelOutcome(); }
         }
 
         function evaluateLevelOutcome() {
             document.getElementById("engine-card").classList.add("hidden");
             document.getElementById("level-over-card").classList.remove("hidden");
-            
             document.getElementById("lvl-score-lbl").innerText = `${levelScore} / 10`;
+            
             let starBox = document.getElementById("star-box");
             let stars = starBox.querySelectorAll(".star");
             stars.forEach(s => s.classList.remove("gold"));
 
             if(levelScore >= 5) {
-                // PASS CASE
                 document.getElementById("lvl-status-title").innerText = "⚡ LEVEL PASSED!";
                 document.getElementById("lvl-status-title").style.color = "var(--neon-green)";
+                let awarded = levelScore === 10 ? 3 : (levelScore >= 8 ? 2 : 1);
+                for(let i = 0; i < awarded; i++) stars[i].classList.add("gold");
                 
-                let awarded = 1;
-                if(levelScore === 10) awarded = 3;
-                else if(levelScore >= 8) awarded = 2;
-
-                for(let i = 0; i < awarded; i++) {
-                    stars[i].classList.add("gold");
-                }
-                
-                document.getElementById("lvl-feedback").innerText = `Excellent system calibration. Module clearance authorized.`;
+                document.getElementById("lvl-feedback").innerText = `Calibration verified. Module level checkpoint cleared successfully.`;
                 document.getElementById("retry-lvl-btn").classList.add("hidden");
                 document.getElementById("continue-lvl-btn").classList.remove("hidden");
                 
-                // Max limits checking before advancing
-                let maxLimits = { ohms: 7, kcl: 14, kvl: 21, series: 28, cap: 34, ac: 40, safety: 45 };
-                if(topicProgress[currentTopic] < maxLimits[currentTopic]) {
+                // Advance the current topic up to Level 50 max
+                if(topicProgress[currentTopic] < 50) {
                     topicProgress[currentTopic]++;
+                } else if(topicProgress[currentTopic] === 50) {
+                    // Level 50 Cleared! Flag it as completed!
+                    topicProgress[currentTopic] = 51; 
+                    document.getElementById("level-over-card").classList.add("hidden");
+                    triggerCertificateGeneration();
                 }
             } else {
-                // FAIL CASE -> Complete reset to the topic's 1st Level baseline
                 document.getElementById("lvl-status-title").innerText = "💥 CRITICAL FAIL!";
                 document.getElementById("lvl-status-title").style.color = "var(--neon-pink)";
-                document.getElementById("lvl-feedback").innerText = `Score is less than 5. System Interlock triggered! You have been reset to the 1st Level of this topic.`;
-                
+                document.getElementById("lvl-feedback").innerText = `Score below 5 threshold. Safety Interlock triggered! You have been completely reset to Level 1 of this specific topic.`;
                 document.getElementById("retry-lvl-btn").classList.remove("hidden");
                 document.getElementById("continue-lvl-btn").classList.add("hidden");
             }
         }
 
         function resetToFirstLevel() {
-            // Re-route target baseline markers directly to 1st Level parameters of the active node
-            if(currentTopic === 'ohms') topicProgress.ohms = 1;
-            else if(currentTopic === 'kcl') topicProgress.kcl = 8;
-            else if(currentTopic === 'kvl') topicProgress.kvl = 15;
-            else if(currentTopic === 'series') topicProgress.series = 22;
-            else if(currentTopic === 'cap') topicProgress.cap = 29;
-            else if(currentTopic === 'ac') topicProgress.ac = 35;
-            else if(currentTopic === 'safety') topicProgress.safety = 41;
-
-            queryTracker = 1;
-            levelScore = 0;
+            topicProgress[currentTopic] = 1; // Direct penalty reset back to Level 1
+            queryTracker = 1; levelScore = 0;
             document.getElementById("level-over-card").classList.add("hidden");
             document.getElementById("engine-card").classList.remove("hidden");
             buildDynamicQuestion();
+        }
+
+        function triggerCertificateGeneration() {
+            document.getElementById("engine-card").classList.add("hidden");
+            document.getElementById("level-over-card").classList.add("hidden");
+            document.getElementById("topic-card").classList.add("hidden");
+            document.getElementById("cert-screen").classList.remove("hidden");
+
+            // Populate printed data values onto layout dynamically
+            document.getElementById("cert-user-name").innerText = userName.toUpperCase();
+            
+            let topicNames = {
+                ohms: "Ohm's Law Matrix Array",
+                kcl: "Kirchhoff's Current Law Node Mesh",
+                kvl: "Kirchhoff's Voltage Loop Spectrum",
+                series: "Series-Parallel Topology Networks",
+                cap: "Capacitors & Inductors Field Dynamics",
+                ac: "AC Alternating Grid Vector Basics",
+                safety: "Powerplant Safety Interlock Protocols"
+            };
+            document.getElementById("cert-topic-name").innerText = topicNames[currentTopic].toUpperCase();
+            document.getElementById("cert-date").innerText = new Date().toLocaleDateString('en-GB');
         }
     </script>
 </body>

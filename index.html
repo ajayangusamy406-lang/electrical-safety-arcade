@@ -3,606 +3,543 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Mega Electrical Engineering Arcade Matrix</title>
+    <title>⚡ Advanced Electrical Engineering Engineering Arcade Grid</title>
     
     <style>
         :root {
-            --dark-bg: #050811;
-            --panel-bg: rgba(15, 23, 42, 0.9);
-            --neon-blue: #00f0ff;
+            --bg-space: #030712;
+            --neon-blue: #00ffff;
             --neon-green: #39ff14;
-            --neon-red: #ff3131;
-            --neon-yellow: #fff01f;
-            --text-light: #f8fafc;
+            --neon-pink: #ff007f;
+            --neon-yellow: #ffea00;
+            --panel-glass: rgba(17, 24, 39, 0.85);
+            --border-glow: rgba(0, 255, 255, 0.25);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--dark-bg);
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-space);
             background-image: 
-                linear-gradient(rgba(0, 240, 255, 0.05) 2px, transparent 2px),
-                linear-gradient(90deg, rgba(0, 240, 255, 0.05) 2px, transparent 2px);
-            background-size: 30px 30px;
-            color: var(--text-light);
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+                radial-gradient(circle at 20% 80%, rgba(255, 0, 127, 0.08) 2px, transparent 2px),
+                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px, 60px 60px, 20px 20px, 20px 20px;
+            color: #f3f4f6;
             margin: 0;
             padding: 20px;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .container {
             width: 100%;
-            max-width: 700px;
+            max-width: 800px;
+            perspective: 1000px;
         }
 
         .card {
-            background: var(--panel-bg);
-            backdrop-filter: blur(10px);
-            padding: 35px;
-            border-radius: 16px;
-            box-shadow: 0 0 35px rgba(0, 240, 255, 0.2);
+            background: var(--panel-glass);
             border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.15), inset 0 0 15px rgba(0, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 35px;
+            backdrop-filter: blur(12px);
             text-align: center;
-            position: relative;
+            transition: all 0.4s ease;
         }
 
         .hidden { display: none !important; }
 
         h1 {
-            font-size: 2.2rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            font-size: 2.3rem;
+            letter-spacing: 3px;
             color: var(--neon-blue);
-            text-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
             margin-top: 0;
+            text-transform: uppercase;
         }
 
-        p { color: #94a3b8; font-size: 1.1rem; }
+        p { color: #9ca3af; font-size: 1.1rem; }
 
         input[type="text"] {
-            width: 100%;
-            padding: 14px;
-            margin: 20px 0;
-            background: #0b0f19;
-            border: 2px solid #334155;
-            border-radius: 8px;
-            font-size: 16px;
+            width: 80%;
+            padding: 15px;
+            background: #090d16;
+            border: 2px solid #374151;
+            border-radius: 10px;
             color: #fff;
-            box-sizing: border-box;
+            font-size: 16px;
             text-align: center;
+            margin: 25px 0;
+            outline: none;
+            transition: 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
         }
 
         button {
-            background: linear-gradient(135deg, #00f0ff, #0072ff);
+            background: linear-gradient(135deg, var(--neon-blue), #0b66c3);
             color: #000;
-            font-weight: 800;
+            font-weight: bold;
             text-transform: uppercase;
-            border: none;
+            letter-spacing: 1px;
             padding: 15px 30px;
-            font-size: 16px;
-            border-radius: 8px;
+            border: none;
+            border-radius: 10px;
             cursor: pointer;
-            width: 100%;
-            margin-top: 15px;
             transition: 0.2s;
         }
-
         button:hover {
-            box-shadow: 0 6px 20px rgba(0, 240, 255, 0.6);
             transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.5);
         }
 
-        .mode-grid {
+        .topic-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 15px;
             margin-top: 25px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
         }
+        .topic-grid::-webkit-scrollbar { width: 6px; }
+        .topic-grid::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
 
-        .mode-btn {
-            background: rgba(30, 41, 59, 0.8);
-            border: 2px solid #1e293b;
-            color: #cbd5e1;
-            padding: 25px 15px;
+        .topic-card {
+            background: rgba(31, 41, 55, 0.6);
+            border: 1px solid #374151;
+            padding: 20px;
             border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: bold;
+            text-align: left;
             cursor: pointer;
-            transition: 0.3s;
             display: flex;
-            flex-direction: column;
+            justify-content: space-between;
             align-items: center;
-            gap: 10px;
+            transition: 0.3s;
+        }
+        .topic-card:hover {
+            border-color: var(--neon-pink);
+            background: rgba(255, 0, 127, 0.05);
+            box-shadow: 0 0 15px rgba(255, 0, 127, 0.15);
         }
 
-        .mode-btn:hover {
-            border-color: var(--neon-blue);
-            color: #fff;
-            background: rgba(0, 240, 255, 0.1);
-            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        .topic-info h3 { margin: 0 0 5px 0; color: #fff; font-size: 1.2rem; }
+        .topic-info small { color: #9ca3af; }
+
+        .lvl-badge {
+            background: #111827;
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid var(--neon-blue);
+            font-weight: bold;
+            color: var(--neon-yellow);
         }
 
         .option-btn {
-            background: rgba(30, 41, 59, 0.9);
-            color: #cbd5e1;
+            background: rgba(17, 24, 39, 0.8);
+            color: #e5e7eb;
+            border: 2px solid #4b5563;
+            width: 100%;
             text-align: left;
-            border: 2px solid #334155;
             margin-bottom: 12px;
             text-transform: none;
-            font-weight: 500;
+            padding: 16px;
         }
+        .option-btn:hover { border-color: var(--neon-blue); background: rgba(0, 255, 255, 0.05); }
+        .selected-option { border-color: var(--neon-yellow) !important; background: rgba(255, 234, 0, 0.1) !important; }
+        
+        .correct { background: linear-gradient(135deg, #064e3b, #10b981) !important; color: #fff !important; border-color: var(--neon-green) !important; }
+        .wrong { background: linear-gradient(135deg, #7f1d1d, #ef4444) !important; color: #fff !important; border-color: var(--neon-pink) !important; }
 
-        .option-btn:hover {
-            border-color: var(--neon-blue);
-            color: #fff;
-        }
+        .star-rating { font-size: 2.5rem; color: #374151; margin: 15px 0; }
+        .star-rating .gold { color: var(--neon-yellow); text-shadow: 0 0 15px var(--neon-yellow); }
 
-        .selected-option {
-            border: 2px solid var(--neon-yellow) !important;
-            background: rgba(255, 240, 31, 0.15) !important;
-            color: #fff !important;
-            box-shadow: 0 0 10px rgba(255, 240, 31, 0.3);
-        }
-
-        .correct { 
-            background: linear-gradient(135deg, #1b4d22, #22c55e) !important; 
-            color: white !important;
-            border-color: var(--neon-green) !important;
-        }
-        .wrong { 
-            background: linear-gradient(135deg, #661d1d, #ef4444) !important; 
-            color: white !important;
-            border-color: var(--neon-red) !important;
-        }
-
-        .quiz-header {
+        .header-meta {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            margin-bottom: 20px;
-            color: var(--neon-blue);
-            background: rgba(11, 15, 25, 0.6);
-            padding: 10px 15px;
-            border-radius: 6px;
-        }
-
-        .timer-container {
-            width: 100%;
-            background-color: #1e293b;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            overflow: hidden;
-        }
-        .timer-bar {
-            width: 100%;
-            height: 8px;
-            background: linear-gradient(90deg, var(--neon-yellow), var(--neon-red));
-            transition: width 1s linear;
-        }
-
-        .top-action-bar {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-        }
-
-        .home-btn {
-            background: linear-gradient(135deg, #ef4444, #991b1b) !important;
-            color: white !important;
-            width: auto !important;
-            padding: 8px 16px !important;
-            margin-top: 0 !important;
-            font-size: 13px !important;
-        }
-
-        .action-btn-layout {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .score-box {
-            font-size: 48px;
-            font-weight: 900;
-            color: var(--neon-green);
-            margin: 20px 0;
-        }
-
-        .certificate-wrapper {
-            background: #fff;
-            color: #1a202c;
-            padding: 25px;
+            background: rgba(0,0,0,0.3);
+            padding: 12px 20px;
             border-radius: 8px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0,255,255,0.2);
         }
-        .certificate {
-            border: 5px double #b45309; 
-            background: #fffcf5;
-            padding: 30px;
-        }
+
+        .timer-track { width: 100%; height: 6px; background: #1f2937; border-radius: 3px; margin-bottom: 25px; overflow: hidden; }
+        .timer-fill { width: 100%; height: 100%; background: var(--neon-pink); transition: width 1s linear; }
+
+        .action-container { display: flex; gap: 15px; margin-top: 20px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- PHASE 1: ENTER NAME -->
-        <div id="start-screen" class="card">
-            <h1>⚡ SAFETY & MATRIX ARCADE</h1>
-            <p>Enter your engineering profile tag to launch terminal initialization</p>
-            <input type="text" id="username" placeholder="⚡ ENTER GAMER / ENGINEER TAG NAME" required>
-            <button id="gate-btn">PROCEED TO GAME MATRIX ➡️</button>
+        <!-- PHASE 1: LOGIN -->
+        <div id="login-card" class="card">
+            <h1>⚡ ENGINEERING ARCADE</h1>
+            <p>Initialize master sequence terminal link</p>
+            <input type="text" id="username-field" placeholder="⚡ ENTER REPOSITORY ACCESS ENGINNER TAG">
+            <br>
+            <button onclick="loginUser()">LAUNCH CORE MATRIX ➡️</button>
         </div>
 
-        <!-- PHASE 2: FOUR ARCADE TYPES -->
-        <div id="menu-screen" class="card hidden">
-            <h1>🎮 SELECT ARCADE MODULE</h1>
-            <p>Welcome, <span id="player-tag" style="color:var(--neon-yellow); font-weight:bold;">PLAYER</span>! Choose your test division:</p>
+        <!-- PHASE 2: 7 TOPICS VIEW -->
+        <div id="topic-card" class="card hidden">
+            <h1>🎮 SELECT OPERATIONS NODE</h1>
+            <p>Engineer Profile: <span id="display-profile" style="color: var(--neon-pink); font-weight: bold;">...</span></p>
             
-            <div class="mode-grid">
-                <div class="mode-btn" onclick="selectArcade('ohms')">
-                    <span style="font-size: 2rem;">💡</span>
-                    <span>OHM'S LAW MATRIX</span>
-                    <small style="color: #64748b;">50 Levels • 1 Min Per Q</small>
+            <div class="topic-grid">
+                <div class="topic-card" onclick="startModule('ohms')">
+                    <div class="topic-info">
+                        <h3>💡 1. Ohm's Law Matrix Array</h3>
+                        <small>Levels 1 - 7 • Active Dynamic System Scan</small>
+                    </div>
+                    <div class="lvl-badge" id="badge-ohms">LVL 1</div>
                 </div>
-                <div class="mode-btn" onclick="selectArcade('kcl')">
-                    <span style="font-size: 2rem;">🔀</span>
-                    <span>KCL JUNCTION BLOCK</span>
-                    <small style="color: #64748b;">50 Levels • 1 Min Per Q</small>
+                <div class="topic-card" onclick="startModule('kcl')">
+                    <div class="topic-info">
+                        <h3>🔀 2. Kirchhoff's Current Law Node</h3>
+                        <small>Levels 8 - 14 • Node Intersection Streams</small>
+                    </div>
+                    <div class="lvl-badge" id="badge-kcl">LVL 8</div>
                 </div>
-                <div class="mode-btn" onclick="selectArcade('kvl')">
-                    <span style="font-size: 2rem;">🔄</span>
-                    <span>KVL MESH NETWORKS</span>
-                    <small style="color: #64748b;">50 Levels • 1 Min Per Q</small>
+                <div class="topic-card" onclick="startModule('kvl')">
+                    <div class="topic-info">
+                        <h3>🔄 3. Kirchhoff's Voltage Loop Mesh</h3>
+                        <small>Levels 15 - 21 • Loop Balancing Arrays</small>
+                    </div>
+                    <div class="lvl-badge" id="badge-kvl">LVL 15</div>
                 </div>
-                <div class="mode-btn" onclick="selectArcade('safety')">
-                    <span style="font-size: 2rem;">🚨</span>
-                    <span>POWERPLANT SAFETY</span>
-                    <small style="color: #64748b;">50 Levels • 1 Min Per Q</small>
+                <div class="topic-card" onclick="startModule('series')">
+                    <div class="topic-info">
+                        <h3>⛓️ 4. Series-Parallel Combinations</h3>
+                        <small>Levels 22 - 28 • Equivalent Topology Circuits</small>
+                    </div>
+                    <div class="lvl-badge" id="badge-series">LVL 22</div>
+                </div>
+                <div class="topic-card" onclick="startModule('cap')">
+                    <div class="topic-info">
+                        <h3>🔋 5. Capacitors & Inductors Field</h3>
+                        <small>Levels 29 - 34 • Reactive Energy Modules</small>
+                    </div>
+                    <div class="lvl-badge" id="badge-cap">LVL 29</div>
+                </div>
+                <div class="topic-card" onclick="startModule('ac')">
+                    <div class="topic-info">
+                        <h3>🌊 6. AC Alternating Grid Basics</h3>
+                        <small>Levels 35 - 40 • Phasor Analytics Vector</small>
+                    </div>
+                    <div class="lvl-badge" id="badge-ac">LVL 35</div>
+                </div>
+                <div class="topic-card" onclick="startModule('safety')">
+                    <div class="topic-info">
+                        <h3>🚨 7. Powerplant Safety Interlock</h3>
+                        <small>Levels 41 - 45 • High Tension Shield Protocols</small>
+                    </div>
+                    <div class="lvl-badge" id="badge-safety">LVL 41</div>
                 </div>
             </div>
         </div>
 
-        <!-- PHASE 3: CORE MARATHON QUIZ ENGINE -->
-        <div id="quiz-screen" class="card hidden">
-            <div class="top-action-bar">
-                <button class="home-btn" onclick="quitToMainMenu()">🚪 QUIT TO MENU</button>
-                <div style="color: var(--neon-red); font-weight: bold; font-size: 1.1rem;">⏱️ TIME: <span id="timer-text">60</span>s</div>
-            </div>
-            
-            <div class="timer-container">
-                <div id="t-bar" class="timer-bar"></div>
+        <!-- PHASE 3: ACTIVE ARCADE ENGINE -->
+        <div id="engine-card" class="card hidden">
+            <div class="header-meta">
+                <span id="meta-topic" style="color: var(--neon-blue); font-weight: bold;">TOPIC</span>
+                <span id="meta-level" style="color: var(--neon-yellow);">LEVEL: 0</span>
+                <span id="meta-qcount" style="color: #fff;">Q: 1 / 10</span>
             </div>
 
-            <div class="quiz-header">
-                <span id="game-title-lbl">💡 OHMS LAW</span>
-                <span id="lvl-lbl" style="color: var(--neon-yellow);">LVL: 1 / 50</span>
-                <span id="quest-lbl">Q: 1 / 10</span>
-            </div>
-            <div style="color: var(--neon-green); font-weight: bold; text-align: left; margin-bottom: 10px;">Level Correct: <span id="lvl-correct-counter">0</span> / 5 Needed</div>
-            
-            <h3 id="question-text" style="font-size: 1.25rem; text-align: left; line-height: 1.5; margin-bottom: 25px;">Connecting to grid module...</h3>
-            <div id="options-container"></div>
-            
-            <div class="action-btn-layout">
-                <button id="submit-btn" style="background: linear-gradient(135deg, #00f0ff, #0d9488);">⚡ SUBMIT RESPONSE</button>
-                <button id="next-btn" class="hidden" style="background: linear-gradient(135deg, #fff01f, #eab308);">PROCEED MATRIX LEVEL ➡️</button>
+            <div class="timer-track"><div id="timer-fill-bar" class="timer-fill"></div></div>
+
+            <h3 id="question-box" style="text-align: left; line-height: 1.6; min-height: 70px; margin-bottom: 25px;">Fetching grid variables...</h3>
+            <div id="options-box"></div>
+
+            <div class="action-container">
+                <button id="lock-btn" onclick="submitChoice()" style="width: 100%;">⚡ LOCK SYSTEM RESPONSE</button>
+                <button id="forward-btn" onclick="advanceStep()" class="hidden" style="width: 100%; background: linear-gradient(135deg, var(--neon-pink), #b91c1c); color: #fff;">NEXT MATRIX INDEX ➡️</button>
             </div>
         </div>
 
-        <!-- PHASE 4: RESULTS RADAR -->
-        <div id="result-screen" class="card hidden">
-            <h1>🏆 ENGINE SUMMARY</h1>
-            <p>Module assessment finished. Total performance status data logged:</p>
-            <div class="score-box"><span id="final-score">0 / 500</span></div>
-            <p id="feedback-msg">Engine tuning checked!</p>
-            <button id="cert-btn" style="background: linear-gradient(135deg, #39ff14, #059669);">👑 PRINT ARCADE DIPLOMA</button>
-            <button onclick="quitToMainMenu()" style="background: #334155; color: #fff; margin-top: 10px;">🎮 MAIN MATRIX MENU</button>
-        </div>
-
-        <!-- CERTIFICATE FRAME -->
-        <div id="certificate-screen" class="card hidden" style="background: #111827;">
-            <div class="certificate-wrapper" id="print-area">
-                <div class="certificate">
-                    <h2 style="color: #78350f; font-family: serif; margin:0;">🏆 SYSTEM CERTIFICATE OF COMPETENCY</h2>
-                    <p style="font-style: italic; color: #4a5568;">This high structural validation token is awarded to</p>
-                    <div id="cert-name" style="font-size: 2.2rem; font-family: serif; color: #1e3a8a; font-weight: bold; margin: 15px 0; border-bottom: 2px dashed #cbd5e1; display:inline-block; padding: 0 20px;">ENGINEER</div>
-                    <p style="font-style: italic; color: #4a5568;">for successfully enduring and mastering the complex marathon of</p>
-                    <div id="cert-title" style="font-weight: bold; color: #b45309; font-size: 1.2rem;">ELECTRICAL ARCADE CORE MODULE</div>
-                    <div style="font-size: 40px; margin-top: 15px;">⚡🏅⚡</div>
-                    <p style="font-family: monospace; color: #718096; margin-top: 15px;" id="cert-date">Date: 12/07/2026</p>
-                </div>
+        <!-- PHASE 4: REVELATION LEVEL MODAL -->
+        <div id="level-over-card" class="card hidden">
+            <h1 id="lvl-status-title">LEVEL EVALUATION</h1>
+            <p>Score metrics parsed: <span id="lvl-score-lbl" style="font-weight: bold; color: var(--neon-green);">0 / 10</span></p>
+            
+            <div class="star-rating" id="star-box">
+                <span class="star">★</span>
+                <span class="star">★</span>
+                <span class="star">★</span>
             </div>
-            <button onclick="window.print()">🖨️ SYSTEM PRINT DEVICE DOWNLOAD</button>
-            <button onclick="quitToMainMenu()" style="background: #334155; color: #fff; margin-top: 10px;">🎮 RETURN TO MENU</button>
+
+            <p id="lvl-feedback">Assessment evaluation concluded.</p>
+            <div class="action-container">
+                <button id="retry-lvl-btn" onclick="resetToFirstLevel()" style="background: linear-gradient(135deg, #dc2626, #991b1b); color: #fff; width: 100%;">💥 RESET TO LEVEL 1</button>
+                <button id="continue-lvl-btn" onclick="goToMenu()" style="width: 100%;">🎮 MAIN MODULE MENU</button>
+            </div>
         </div>
     </div>
 
     <script>
         let userName = "";
-        let selectedModule = "";
-        let currentLvl = 1;
-        let currentQCount = 1;
-        let runningScore = 0;
-        let correctInThisLevel = 0; 
+        let currentTopic = "";
         
-        let activeQuestionObj = {};
-        let countdownTimer = null;
-        let secondsLeft = 60; // Upgraded to 1 minute
+        // Dynamic Tracking object for all 7 topics
+        let topicProgress = {
+            ohms: 1,
+            kcl: 8,
+            kvl: 15,
+            series: 22,
+            cap: 29,
+            ac: 35,
+            safety: 41
+        };
+
+        let queryTracker = 1;
+        let levelScore = 0;
+        let activeQ = {};
+        let ticker = null;
+        let timeRemaining = 60;
         let selectedIndex = null;
 
-        const startScreen = document.getElementById("start-screen");
-        const menuScreen = document.getElementById("menu-screen");
-        const quizScreen = document.getElementById("quiz-screen");
-        const resultScreen = document.getElementById("result-screen");
-        const certificateScreen = document.getElementById("certificate-screen");
-        const submitBtn = document.getElementById("submit-btn");
-        const nextBtn = document.getElementById("next-btn");
-
-        document.getElementById("gate-btn").addEventListener("click", () => {
-            const inputName = document.getElementById("username").value.trim();
-            if(inputName === "") { alert("💥 Entry Tag Required!"); return; }
-            userName = inputName;
-            document.getElementById("player-tag").innerText = userName.toUpperCase();
-            startScreen.classList.add("hidden");
-            menuScreen.classList.remove("hidden");
-            sendNotification(userName, "LOGGED IN", 1, 0); 
-        });
-
-        function sendNotification(name, status, lvl, score) {
-            // *** LINE 320: Put your Formspree dynamic token id here ***
-            fetch("https://formspree.io/f/XXXXXX", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    Player_Name: name,
-                    Status: status,
-                    Module: selectedModule.toUpperCase(),
-                    Current_Level: lvl,
-                    Total_Score: score,
-                    Timestamp: new Date().toLocaleString()
-                })
-            }).catch(err => console.log("Tracking sync logged."));
+        function loginUser() {
+            let val = document.getElementById("username-field").value.trim();
+            if(!val) { alert("Access Tag Required!"); return; }
+            userName = val;
+            document.getElementById("display-profile").innerText = userName.toUpperCase();
+            document.getElementById("login-card").classList.add("hidden");
+            document.getElementById("topic-card").classList.remove("hidden");
+            updateBadgesUI();
         }
 
-        function quitToMainMenu() {
-            clearInterval(countdownTimer);
-            quizScreen.classList.add("hidden");
-            resultScreen.classList.add("hidden");
-            certificateScreen.classList.add("hidden");
-            menuScreen.classList.remove("hidden");
+        function updateBadgesUI() {
+            document.getElementById("badge-ohms").innerText = `LVL ${topicProgress.ohms}`;
+            document.getElementById("badge-kcl").innerText = `LVL ${topicProgress.kcl}`;
+            document.getElementById("badge-kvl").innerText = `LVL ${topicProgress.kvl}`;
+            document.getElementById("badge-series").innerText = `LVL ${topicProgress.series}`;
+            document.getElementById("badge-cap").innerText = `LVL ${topicProgress.cap}`;
+            document.getElementById("badge-ac").innerText = `LVL ${topicProgress.ac}`;
+            document.getElementById("badge-safety").innerText = `LVL ${topicProgress.safety}`;
         }
 
-        function selectArcade(moduleType) {
-            selectedModule = moduleType;
-            currentLvl = 1;
-            currentQCount = 1;
-            runningScore = 0;
-            correctInThisLevel = 0;
+        function goToMenu() {
+            document.getElementById("level-over-card").classList.add("hidden");
+            document.getElementById("engine-card").classList.add("hidden");
+            document.getElementById("topic-card").classList.remove("hidden");
+            updateBadgesUI();
+        }
+
+        function startModule(topic) {
+            currentTopic = topic;
+            queryTracker = 1;
+            levelScore = 0;
+
+            document.getElementById("topic-card").classList.add("hidden");
+            document.getElementById("engine-card").classList.remove("hidden");
+            buildDynamicQuestion();
+        }
+
+        function runClock() {
+            clearInterval(ticker);
+            timeRemaining = 60;
+            document.getElementById("timer-fill-bar").style.width = "100%";
             
-            let titles = { ohms: "💡 OHM'S LAW MATRIX", kcl: "🔀 KCL JUNCTION BLOCK", kvl: "🔄 KVL MESH NETWORKS", safety: "🚨 POWERPLANT SAFETY" };
-            document.getElementById("game-title-lbl").innerText = titles[moduleType];
-            
-            menuScreen.classList.add("hidden");
-            quizScreen.classList.remove("hidden");
-            sendNotification(userName, `STARTED MODULE: ${moduleType}`, currentLvl, runningScore);
-            generateAndLoadQuestion();
-        }
-
-        function startTimer() {
-            clearInterval(countdownTimer);
-            secondsLeft = 60; // 60 Seconds
-            document.getElementById("timer-text").innerText = secondsLeft;
-            document.getElementById("t-bar").style.width = "100%";
-
-            countdownTimer = setInterval(() => {
-                secondsLeft--;
-                document.getElementById("timer-text").innerText = secondsLeft;
-                document.getElementById("t-bar").style.width = (secondsLeft / 60 * 100) + "%";
-
-                if (secondsLeft <= 0) {
-                    clearInterval(countdownTimer);
-                    handleTimeOut();
+            ticker = setInterval(() => {
+                timeRemaining--;
+                document.getElementById("timer-fill-bar").style.width = (timeRemaining / 60 * 100) + "%";
+                if(timeRemaining <= 0) {
+                    clearInterval(ticker);
+                    forceTimeout();
                 }
             }, 1000);
         }
 
-        function handleTimeOut() {
-            submitBtn.classList.add("hidden");
-            const btns = document.querySelectorAll(".option-btn");
-            btns.forEach(b => b.disabled = true);
-            btns[activeQuestionObj.correct].classList.add("correct");
-            nextBtn.classList.remove("hidden");
+        function forceTimeout() {
+            document.getElementById("lock-btn").classList.add("hidden");
+            const opts = document.querySelectorAll(".option-btn");
+            opts.forEach(o => o.disabled = true);
+            opts[activeQ.answerIdx].classList.add("correct");
+            document.getElementById("forward-btn").classList.remove("hidden");
         }
 
-        function generateAndLoadQuestion() {
-            nextBtn.classList.add("hidden");
-            submitBtn.classList.remove("hidden");
+        function buildDynamicQuestion() {
+            document.getElementById("forward-btn").classList.add("hidden");
+            document.getElementById("lock-btn").classList.remove("hidden");
             selectedIndex = null;
 
-            document.getElementById("lvl-lbl").innerText = `LVL: ${currentLvl} / 50`;
-            document.getElementById("quest-lbl").innerText = `Q: ${currentQCount} / 10`;
-            document.getElementById("lvl-correct-counter").innerText = correctInThisLevel;
+            let currentLvl = topicProgress[currentTopic];
+            document.getElementById("meta-topic").innerText = currentTopic.toUpperCase() + " NETWORK";
+            document.getElementById("meta-level").innerText = `LEVEL: ${currentLvl}`;
+            document.getElementById("meta-qcount").innerText = `Q: ${queryTracker} / 10`;
 
-            let qText = "";
-            let opts = [];
-            let corrIdx = 0;
-            
-            // Scaled complexity multipliers ensures zero repetition across 50 progressive levels
-            let factorX = (currentLvl * 7) + (currentQCount * 3) + 4;
-            let factorY = (currentLvl * 3) + currentQCount + 2;
+            let text = "";
+            let selections = [];
+            let ans = 0;
 
-            if (selectedModule === 'ohms') {
-                let formulaCycle = (currentLvl + currentQCount) % 3;
-                if (formulaCycle === 0) {
-                    let calcV = factorX * factorY;
-                    qText = `[Level ${currentLvl} - Core Setup] An engineered network terminal line maintains a fixed execution profile tracking at Current (I) = ${factorX} Amps, backed by system localized loop Resistance (R) = ${factorY} Ohms. Evaluate the target node Voltage drops.`;
-                    opts = [`${calcV} Volts`, `${calcV + 15} Volts`, `${Math.round(calcV / 2)} Volts`];
-                    corrIdx = 0;
-                } else if (formulaCycle === 1) {
-                    let calcI = factorX;
-                    let targetV = calcI * factorY;
-                    qText = `[Level ${currentLvl} - Load Scan] The main diagnostic monitor indexes a localized potential drop reading of exactly ${targetV} Volts across a resistor network tracking at ${factorY} Ohms. Identify the current throughput.`;
-                    opts = [`${targetV + 5} Amps`, `${calcI} Amps`, `${calcI * 3} Amps`];
-                    corrIdx = 1;
-                } else {
-                    let calcR = factorY;
-                    let targetV = factorX * calcR;
-                    qText = `[Level ${currentLvl} - Ohm Vector] A dedicated power track shows live continuous metrics indicating potential differences of ${targetV} Volts, yielding an execution current load value of ${factorX} Amps. Compute the circuit component's Resistance.`;
-                    opts = [`${targetV + 2} Ohms`, `${targetV * 2} Ohms`, `${calcR} Ohms`];
-                    corrIdx = 2;
-                }
+            let seedX = (currentLvl * 9) + (queryTracker * 4) + 2;
+            let seedY = (currentLvl * 2) + queryTracker + 3;
+
+            if (currentTopic === 'ohms') {
+                let v = seedX * seedY;
+                text = `[Ohm-Scan Verification] Telemetry indicates uniform steady channel state dynamics where system Current is logged at ${seedX}A with total load resistance mapping down at ${seedY} Ohms. Evaluate the total source EMF potential.`;
+                selections = [`${v} Volts`, `${v + 12} Volts`, `${Math.floor(v/2)} Volts`];
+                ans = 0;
             } 
-            else if (selectedModule === 'kcl') {
-                let combinedIn = factorX + factorY;
-                if (currentQCount % 2 === 0) {
-                    qText = `[Level ${currentLvl} - Junction Matrix] A complex multi-node schematic registers two converging incoming sub-branch load currents calculating at exactly ${factorX}A and ${factorY}A. Apply Kirchhoff's Current Law to find the escaping terminal vector output.`;
-                    opts = [`${combinedIn} Amps`, `${Math.abs(factorX - factorY)} Amps`, `${combinedIn * 2} Amps`];
-                    corrIdx = 0;
-                } else {
-                    qText = `[Level ${currentLvl} - Node Drainage] A converging junction grid receives an absolute continuous feed stream total of ${combinedIn} Amps. Secondary telemetry records show that branch line alpha channels precisely ${factorX} Amps out. Find the remaining load path flow.`;
-                    opts = [`${combinedIn + factorX} Amps`, `${factorY} Amps`, `0 Amps`];
-                    corrIdx = 1;
-                }
+            else if (currentTopic === 'kcl') {
+                let sum = seedX + seedY;
+                text = `[KCL Matrix Junction] In an integrated node mesh array, two incoming operational vectors input exactly ${seedX}A and ${seedY}A paths into the central core branch. Determine the total outbound balancing discharge current to preserve Kirchhoff's node properties.`;
+                selections = [`${Math.abs(seedX-seedY)} A`, `${sum} Amps`, `${sum * 2} A`];
+                ans = 1;
             } 
-            else if (selectedModule === 'kvl') {
-                let totalLoopEMF = factorX * 8;
-                let staticDropA = factorX * 3;
-                let staticDropB = factorX * 2;
-                let targetDropX = totalLoopEMF - (staticDropA + staticDropB);
-                
-                if (currentQCount % 2 === 0) {
-                    qText = `[Level ${currentLvl} - Mesh Closed Loop] A continuous distributed circuit network mesh maps an integrated EMF power source rating of ${totalLoopEMF}V. Internal monitoring registers clear load point drops measuring ${staticDropA}V and ${staticDropB}V. Calculate the matching residual loop potential drop.`;
-                    opts = [`${targetDropX + 12} Volts`, `${totalLoopEMF} Volts`, `${targetDropX} Volts`];
-                    corrIdx = 2;
-                } else {
-                    let totalSumV = staticDropA + staticDropB + targetDropX;
-                    qText = `[Level ${currentLvl} - Telemetry Balancing] Structural vector calculations identify three successive series-connected component drops evaluating into exact values of ${staticDropA}V, ${staticDropB}V, and ${targetDropX}V. Determine the source potential required to satisfy KVL loop properties.`;
-                    opts = [`${totalSumV} Volts`, `${Math.abs(staticDropA - staticDropB)} Volts`, `${totalSumV * 2} Volts`];
-                    corrIdx = 0;
-                }
+            else if (currentTopic === 'kvl') {
+                let source = seedX * 6;
+                let drop1 = seedX * 2;
+                let drop2 = seedX * 3;
+                let target = source - (drop1 + drop2);
+                text = `[KVL Mesh Dynamic] A localized tracking loop contains a master generator source generating ${source}V. Two known sequentially connected step resistors cause verified voltage drops of ${drop1}V and ${drop2}V. Compute the lingering potential drops at the final element node.`;
+                selections = [`${target + 5} V`, `0 V`, `${target} Volts`];
+                ans = 2;
+            } 
+            else if (currentTopic === 'series') {
+                let combined = seedX + seedY;
+                text = `[Topology Config] System paths deploy two modular power processing components linked in absolute standard series configuration, registering individual values of ${seedX} Ohms and ${seedY} Ohms. Evaluate the system's absolute input Equivalent Resistance.`;
+                selections = [`${combined} Ohms`, `${(seedX*seedY)/(seedX+seedY)} Ohms`, `${combined + 10} Ohms`];
+                ans = 0;
+            } 
+            else if (currentTopic === 'cap') {
+                let c1 = seedX * 2;
+                text = `[Reactive Energy Matrix] An engineer mounts two high-isolation capacitive nodes in a parallel structural matrix bank layout. Tracking elements measure branch units at exactly ${c1} uF and ${seedY} uF. Calculate the aggregate array Total Capacitance.`;
+                selections = [`${Math.abs(c1-seedY)} uF`, `${c1 + seedY} uF`, `${Math.floor(c1/2)} uF`];
+                ans = 1;
+            } 
+            else if (currentTopic === 'ac') {
+                let f = 50 + currentLvl;
+                text = `[Alternating Phasor Scan] An industrial variable frequency generator tracks a high-voltage alternating wave vector matrix at exactly ${f} Hz frequency cycle rates. Compute the system's specific Angular Velocity ($w = 2\\pi f$).`;
+                selections = [`${2 * 3.14 * f} rad/sec`, `${f} rad/s`, `${1 / f} rad/sec`];
+                ans = 0;
             } 
             else {
-                let safetyBanks = [
-                    { q: "Which active safety integration architecture is explicitly tailored to prevent localized fire hazards caused by branch insulation breakdown overload faults?", o: ["Bare copper grounding link bypassing fuses", "Calibrated overcurrent Safety Fuse or Circuit Breaker unit", "High density protective tracking paper layouts"], c: 1 },
-                    { q: "When working near energized electrical conductors, what type of personal protective equipment (PPE) is critical for hand isolation protection?", o: ["Standard steel-reinforced fabrication work gloves", "Dielectric-rated fully insulated rubber safety gloves", "Moisturized woven canvas antistatic handling wraps"], c: 1 },
-                    { q: "During an active industrial emergency where an operative remains locked under structural live conductor path contact, what is the primary protocol?", o: ["Douse the terminal contact field with running mains water", "Manually grip the victim's bare skin to break connection forces", "Isolate core upstream distribution safety breakers immediately"], c: 2 },
-                    { q: "Why must substation instrumentation switch operations completely avoid areas with standing water or excessive moisture fields?", o: ["Water increases total load wire path system impedance resistance", "Moisture decreases ground isolation resistance, creating a high-risk current path through the operator", "Water shifts alternating current source execution frequency metrics"], c: 1 }
+                let dynamicHazards = [
+                    {q: "What is the primary technical objective of deploying proper system Earthing/Grounding structural layout systems?", o: ["Boost load frequency values", "Provide low impedance fault return tracks directly to ground away from workers", "Enhance phase step angle parameters"], c: 1},
+                    {q: "Identify the critical lockout protocol rule utilized during full maintenance tasks inside substation machinery.", o: ["Lockout-Tagout (LOTO) isolation systems", "Increase line current properties to vaporize errors", "Bypass secondary isolation fuses"], c: 0}
                 ];
-                let structuralPick = safetyBanks[(currentLvl + currentQCount) % safetyBanks.length];
-                qText = `[Level ${currentLvl} - Protocol Alert] ${structuralPick.q}`;
-                opts = structuralPick.o;
-                corrIdx = structuralPick.c;
+                let match = dynamicHazards[queryTracker % dynamicHazards.length];
+                text = `[Safety Interlock Alert] ${match.q}`;
+                selections = match.o;
+                ans = match.c;
             }
 
-            activeQuestionObj = { question: qText, options: opts, correct: corrIdx };
-            document.getElementById("question-text").innerText = qText;
+            activeQ = { question: text, options: selections, answerIdx: ans };
+            document.getElementById("question-box").innerText = text;
             
-            const container = document.getElementById("options-container");
-            container.innerHTML = "";
-
-            opts.forEach((opt, idx) => {
-                const btn = document.createElement("button");
-                btn.innerText = opt;
-                btn.classList.add("option-btn");
-                btn.addEventListener("click", () => highlightSelection(idx, btn));
-                container.appendChild(btn);
+            let block = document.getElementById("options-box");
+            block.innerHTML = "";
+            selections.forEach((opt, idx) => {
+                let b = document.createElement("button");
+                b.innerText = opt;
+                b.classList.add("option-btn");
+                b.onclick = () => {
+                    const all = document.querySelectorAll(".option-btn");
+                    all.forEach(x => x.classList.remove("selected-option"));
+                    selectedIndex = idx;
+                    b.classList.add("selected-option");
+                };
+                block.appendChild(b);
             });
 
-            startTimer();
+            runClock();
         }
 
-        function highlightSelection(idx, btn) {
-            // Remove previous choice styling safely
-            const btns = document.querySelectorAll(".option-btn");
-            btns.forEach(b => b.classList.remove("selected-option"));
+        function submitChoice() {
+            if(selectedIndex === null) { alert("Select a terminal system option line first!"); return; }
+            clearInterval(ticker);
+            document.getElementById("lock-btn").classList.add("hidden");
             
-            // Lock target locally
-            selectedIndex = idx;
-            btn.classList.add("selected-option");
+            const elements = document.querySelectorAll(".option-btn");
+            elements.forEach(e => { e.disabled = true; e.classList.remove("selected-option"); });
+
+            if(selectedIndex === activeQ.answerIdx) {
+                elements[selectedIndex].classList.add("correct");
+                levelScore++;
+            } else {
+                elements[selectedIndex].classList.add("wrong");
+                elements[activeQ.answerIdx].classList.add("correct");
+            }
+            document.getElementById("forward-btn").classList.remove("hidden");
         }
 
-        submitBtn.addEventListener("click", () => {
-            if (selectedIndex === null) {
-                alert("🚨 Choose your choice option response first before submission track!");
-                return;
+        function advanceStep() {
+            if(queryTracker < 10) {
+                queryTracker++;
+                buildDynamicQuestion();
+            } else {
+                evaluateLevelOutcome();
             }
+        }
 
-            clearInterval(countdownTimer);
-            submitBtn.classList.add("hidden");
+        function evaluateLevelOutcome() {
+            document.getElementById("engine-card").classList.add("hidden");
+            document.getElementById("level-over-card").classList.remove("hidden");
             
-            const btns = document.querySelectorAll(".option-btn");
-            btns.forEach(b => {
-                b.disabled = true;
-                b.classList.remove("selected-option");
-            });
+            document.getElementById("lvl-score-lbl").innerText = `${levelScore} / 10`;
+            let starBox = document.getElementById("star-box");
+            let stars = starBox.querySelectorAll(".star");
+            stars.forEach(s => s.classList.remove("gold"));
 
-            if (selectedIndex === activeQuestionObj.correct) {
-                btns[selectedIndex].classList.add("correct");
-                runningScore += 10;
-                correctInThisLevel++;
-                document.getElementById("lvl-correct-counter").innerText = correctInThisLevel;
-            } else {
-                btns[selectedIndex].classList.add("wrong");
-                btns[activeQuestionObj.correct].classList.add("correct");
-            }
-            nextBtn.classList.remove("hidden");
-        });
+            if(levelScore >= 5) {
+                // PASS CASE
+                document.getElementById("lvl-status-title").innerText = "⚡ LEVEL PASSED!";
+                document.getElementById("lvl-status-title").style.color = "var(--neon-green)";
+                
+                let awarded = 1;
+                if(levelScore === 10) awarded = 3;
+                else if(levelScore >= 8) awarded = 2;
 
-        nextBtn.addEventListener("click", () => {
-            if (currentQCount < 10) {
-                currentQCount++;
-                generateAndLoadQuestion();
-            } else {
-                if (correctInThisLevel >= 5) {
-                    alert(`Mass da! Level ${currentLvl} Cleared with ${correctInThisLevel}/10 Correct Answers! Moving up the matrix.`);
-                    sendNotification(userName, `PASSED LEVEL ${currentLvl}`, currentLvl, runningScore);
-                    if (currentLvl < 50) {
-                        currentLvl++;
-                        currentQCount = 1;
-                        correctInThisLevel = 0; 
-                        generateAndLoadQuestion();
-                    } else {
-                        terminateArcadeSession();
-                    }
-                } else {
-                    alert(`💥 GAME OVER DA! You only got ${correctInThisLevel}/10 correct. You need at least 5! Resetting back to Level 1.`);
-                    sendNotification(userName, `FAILED AT LEVEL ${currentLvl} (Score: ${correctInThisLevel}/10)`, currentLvl, runningScore);
-                    currentLvl = 1;
-                    currentQCount = 1;
-                    runningScore = 0;
-                    correctInThisLevel = 0;
-                    generateAndLoadQuestion();
+                for(let i = 0; i < awarded; i++) {
+                    stars[i].classList.add("gold");
                 }
+                
+                document.getElementById("lvl-feedback").innerText = `Excellent system calibration. Module clearance authorized.`;
+                document.getElementById("retry-lvl-btn").classList.add("hidden");
+                document.getElementById("continue-lvl-btn").classList.remove("hidden");
+                
+                // Max limits checking before advancing
+                let maxLimits = { ohms: 7, kcl: 14, kvl: 21, series: 28, cap: 34, ac: 40, safety: 45 };
+                if(topicProgress[currentTopic] < maxLimits[currentTopic]) {
+                    topicProgress[currentTopic]++;
+                }
+            } else {
+                // FAIL CASE -> Complete reset to the topic's 1st Level baseline
+                document.getElementById("lvl-status-title").innerText = "💥 CRITICAL FAIL!";
+                document.getElementById("lvl-status-title").style.color = "var(--neon-pink)";
+                document.getElementById("lvl-feedback").innerText = `Score is less than 5. System Interlock triggered! You have been reset to the 1st Level of this topic.`;
+                
+                document.getElementById("retry-lvl-btn").classList.remove("hidden");
+                document.getElementById("continue-lvl-btn").classList.add("hidden");
             }
-        });
-
-        function terminateArcadeSession() {
-            clearInterval(countdownTimer);
-            quizScreen.classList.add("hidden");
-            resultScreen.classList.remove("hidden");
-            
-            document.getElementById("final-score").innerText = `${runningScore} / 500`;
-            let msg = "";
-            if (runningScore >= 450) msg = "🔥 GODLIKE STATUS: Perfect system load integration accomplished!";
-            else if (runningScore >= 300) msg = "⚡ STABLE MATRIX: Smooth operation capacity cleared!";
-            else msg = "⚠️ CRITICAL ERRORS: Power grids suffered lines drop down leaks.";
-            
-            document.getElementById("feedback-msg").innerText = msg;
-            sendNotification(userName, "COMPLETED GAME ARCADE", currentLvl, runningScore);
         }
 
-        document.getElementById("cert-btn").addEventListener("click", () => {
-            resultScreen.classList.add("hidden");
-            certificateScreen.classList.remove("hidden");
-            document.getElementById("cert-name").innerText = userName.toUpperCase();
-            
-            let modulesMapped = { ohms: "Ohm's Law Master Calibration Array", kcl: "Kirchhoff's Node Junction Validation Block", kvl: "Kirchhoff's Closed Loop Mesh Network Matrix", safety: "Powerplant Safety & Emergency Isolation Core Protocol" };
-            document.getElementById("cert-title").innerText = modulesMapped[selectedModule].toUpperCase();
-            document.getElementById("cert-date").innerText = `Date: ${new Date().toLocaleDateString()}`;
-        });
+        function resetToFirstLevel() {
+            // Re-route target baseline markers directly to 1st Level parameters of the active node
+            if(currentTopic === 'ohms') topicProgress.ohms = 1;
+            else if(currentTopic === 'kcl') topicProgress.kcl = 8;
+            else if(currentTopic === 'kvl') topicProgress.kvl = 15;
+            else if(currentTopic === 'series') topicProgress.series = 22;
+            else if(currentTopic === 'cap') topicProgress.cap = 29;
+            else if(currentTopic === 'ac') topicProgress.ac = 35;
+            else if(currentTopic === 'safety') topicProgress.safety = 41;
+
+            queryTracker = 1;
+            levelScore = 0;
+            document.getElementById("level-over-card").classList.add("hidden");
+            document.getElementById("engine-card").classList.remove("hidden");
+            buildDynamicQuestion();
+        }
     </script>
 </body>
 </html>

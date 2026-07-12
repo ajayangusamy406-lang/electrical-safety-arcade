@@ -128,7 +128,7 @@
             background: rgba(30, 41, 59, 0.9);
             color: #cbd5e1;
             text-align: left;
-            border: 1px solid #334155;
+            border: 2px solid #334155;
             margin-bottom: 12px;
             text-transform: none;
             font-weight: 500;
@@ -137,6 +137,13 @@
         .option-btn:hover {
             border-color: var(--neon-blue);
             color: #fff;
+        }
+
+        .selected-option {
+            border: 2px solid var(--neon-yellow) !important;
+            background: rgba(255, 240, 31, 0.15) !important;
+            color: #fff !important;
+            box-shadow: 0 0 10px rgba(255, 240, 31, 0.3);
         }
 
         .correct { 
@@ -191,6 +198,12 @@
             font-size: 13px !important;
         }
 
+        .action-btn-layout {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
         .score-box {
             font-size: 48px;
             font-weight: 900;
@@ -232,22 +245,22 @@
                 <div class="mode-btn" onclick="selectArcade('ohms')">
                     <span style="font-size: 2rem;">💡</span>
                     <span>OHM'S LAW MATRIX</span>
-                    <small style="color: #64748b;">50 Levels • 30s Per Q</small>
+                    <small style="color: #64748b;">50 Levels • 1 Min Per Q</small>
                 </div>
                 <div class="mode-btn" onclick="selectArcade('kcl')">
                     <span style="font-size: 2rem;">🔀</span>
                     <span>KCL JUNCTION BLOCK</span>
-                    <small style="color: #64748b;">50 Levels • 30s Per Q</small>
+                    <small style="color: #64748b;">50 Levels • 1 Min Per Q</small>
                 </div>
                 <div class="mode-btn" onclick="selectArcade('kvl')">
                     <span style="font-size: 2rem;">🔄</span>
                     <span>KVL MESH NETWORKS</span>
-                    <small style="color: #64748b;">50 Levels • 30s Per Q</small>
+                    <small style="color: #64748b;">50 Levels • 1 Min Per Q</small>
                 </div>
                 <div class="mode-btn" onclick="selectArcade('safety')">
                     <span style="font-size: 2rem;">🚨</span>
                     <span>POWERPLANT SAFETY</span>
-                    <small style="color: #64748b;">50 Levels • 30s Per Q</small>
+                    <small style="color: #64748b;">50 Levels • 1 Min Per Q</small>
                 </div>
             </div>
         </div>
@@ -256,7 +269,7 @@
         <div id="quiz-screen" class="card hidden">
             <div class="top-action-bar">
                 <button class="home-btn" onclick="quitToMainMenu()">🚪 QUIT TO MENU</button>
-                <div style="color: var(--neon-red); font-weight: bold; font-size: 1.1rem;">⏱️ TIME: <span id="timer-text">30</span>s</div>
+                <div style="color: var(--neon-red); font-weight: bold; font-size: 1.1rem;">⏱️ TIME: <span id="timer-text">60</span>s</div>
             </div>
             
             <div class="timer-container">
@@ -269,9 +282,14 @@
                 <span id="quest-lbl">Q: 1 / 10</span>
             </div>
             <div style="color: var(--neon-green); font-weight: bold; text-align: left; margin-bottom: 10px;">Level Correct: <span id="lvl-correct-counter">0</span> / 5 Needed</div>
+            
             <h3 id="question-text" style="font-size: 1.25rem; text-align: left; line-height: 1.5; margin-bottom: 25px;">Connecting to grid module...</h3>
             <div id="options-container"></div>
-            <button id="next-btn" class="hidden" style="background: linear-gradient(135deg, #fff01f, #eab308);">PROCEED MATRIX LEVEL ➡️</button>
+            
+            <div class="action-btn-layout">
+                <button id="submit-btn" style="background: linear-gradient(135deg, #00f0ff, #0d9488);">⚡ SUBMIT RESPONSE</button>
+                <button id="next-btn" class="hidden" style="background: linear-gradient(135deg, #fff01f, #eab308);">PROCEED MATRIX LEVEL ➡️</button>
+            </div>
         </div>
 
         <!-- PHASE 4: RESULTS RADAR -->
@@ -312,13 +330,16 @@
         
         let activeQuestionObj = {};
         let countdownTimer = null;
-        let secondsLeft = 30;
+        let secondsLeft = 60; // Upgraded to 1 minute
+        let selectedIndex = null;
 
         const startScreen = document.getElementById("start-screen");
         const menuScreen = document.getElementById("menu-screen");
         const quizScreen = document.getElementById("quiz-screen");
         const resultScreen = document.getElementById("result-screen");
         const certificateScreen = document.getElementById("certificate-screen");
+        const submitBtn = document.getElementById("submit-btn");
+        const nextBtn = document.getElementById("next-btn");
 
         document.getElementById("gate-btn").addEventListener("click", () => {
             const inputName = document.getElementById("username").value.trim();
@@ -331,7 +352,7 @@
         });
 
         function sendNotification(name, status, lvl, score) {
-            // *** LINE 320: Replace XXXXXX with your Formspree unique text code ***
+            // *** LINE 320: Put your Formspree dynamic token id here ***
             fetch("https://formspree.io/f/XXXXXX", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -343,7 +364,7 @@
                     Total_Score: score,
                     Timestamp: new Date().toLocaleString()
                 })
-            }).catch(err => console.log("Tracking log synced."));
+            }).catch(err => console.log("Tracking sync logged."));
         }
 
         function quitToMainMenu() {
@@ -372,14 +393,14 @@
 
         function startTimer() {
             clearInterval(countdownTimer);
-            secondsLeft = 30;
+            secondsLeft = 60; // 60 Seconds
             document.getElementById("timer-text").innerText = secondsLeft;
             document.getElementById("t-bar").style.width = "100%";
 
             countdownTimer = setInterval(() => {
                 secondsLeft--;
                 document.getElementById("timer-text").innerText = secondsLeft;
-                document.getElementById("t-bar").style.width = (secondsLeft / 30 * 100) + "%";
+                document.getElementById("t-bar").style.width = (secondsLeft / 60 * 100) + "%";
 
                 if (secondsLeft <= 0) {
                     clearInterval(countdownTimer);
@@ -389,14 +410,18 @@
         }
 
         function handleTimeOut() {
+            submitBtn.classList.add("hidden");
             const btns = document.querySelectorAll(".option-btn");
             btns.forEach(b => b.disabled = true);
             btns[activeQuestionObj.correct].classList.add("correct");
-            document.getElementById("next-btn").classList.remove("hidden");
+            nextBtn.classList.remove("hidden");
         }
 
         function generateAndLoadQuestion() {
-            document.getElementById("next-btn").classList.add("hidden");
+            nextBtn.classList.add("hidden");
+            submitBtn.classList.remove("hidden");
+            selectedIndex = null;
+
             document.getElementById("lvl-lbl").innerText = `LVL: ${currentLvl} / 50`;
             document.getElementById("quest-lbl").innerText = `Q: ${currentQCount} / 10`;
             document.getElementById("lvl-correct-counter").innerText = correctInThisLevel;
@@ -405,71 +430,71 @@
             let opts = [];
             let corrIdx = 0;
             
-            let valA = (currentLvl * 2) + currentQCount + 2; 
-            let valB = currentLvl + currentQCount;
+            // Scaled complexity multipliers ensures zero repetition across 50 progressive levels
+            let factorX = (currentLvl * 7) + (currentQCount * 3) + 4;
+            let factorY = (currentLvl * 3) + currentQCount + 2;
 
             if (selectedModule === 'ohms') {
-                let type = currentQCount % 3;
-                if (type === 0) {
-                    let v = valA * valB;
-                    qText = `[Level ${currentLvl} - Q${currentQCount}] A network circuit block loop has an active Current (I) of ${valA} Amps and total system Resistance (R) of ${valB} Ohms. Find the total supply Voltage (V) across nodes.`;
-                    opts = [`${v} Volts`, `${valA + valB} Volts`, `${Math.max(1, Math.round(v/2))} Volts`];
+                let formulaCycle = (currentLvl + currentQCount) % 3;
+                if (formulaCycle === 0) {
+                    let calcV = factorX * factorY;
+                    qText = `[Level ${currentLvl} - Core Setup] An engineered network terminal line maintains a fixed execution profile tracking at Current (I) = ${factorX} Amps, backed by system localized loop Resistance (R) = ${factorY} Ohms. Evaluate the target node Voltage drops.`;
+                    opts = [`${calcV} Volts`, `${calcV + 15} Volts`, `${Math.round(calcV / 2)} Volts`];
                     corrIdx = 0;
-                } else if (type === 1) {
-                    let r = Math.max(2, valB);
-                    let v = r * valA;
-                    qText = `[Level ${currentLvl} - Q${currentQCount}] A loop network registers an electrical potential difference of ${v} Volts with internal mesh Resistance of ${r} Ohms. Calculate loop current flow line data.`;
-                    opts = [`${Math.round(v*r)} Amps`, `${valA} Amps`, `${(v+r)} Amps`];
+                } else if (formulaCycle === 1) {
+                    let calcI = factorX;
+                    let targetV = calcI * factorY;
+                    qText = `[Level ${currentLvl} - Load Scan] The main diagnostic monitor indexes a localized potential drop reading of exactly ${targetV} Volts across a resistor network tracking at ${factorY} Ohms. Identify the current throughput.`;
+                    opts = [`${targetV + 5} Amps`, `${calcI} Amps`, `${calcI * 3} Amps`];
                     corrIdx = 1;
                 } else {
-                    let i = Math.max(2, valB);
-                    let v = i * valA;
-                    qText = `[Level ${currentLvl} - Q${currentQCount}] Potential drops at node metrics read ${v} Volts while current registers exactly ${i} Amps. Evaluate active load network structural resistance value.`;
-                    opts = [`${v+i} Ohms`, `${Math.round(v*i)} Ohms`, `${valA} Ohms`];
+                    let calcR = factorY;
+                    let targetV = factorX * calcR;
+                    qText = `[Level ${currentLvl} - Ohm Vector] A dedicated power track shows live continuous metrics indicating potential differences of ${targetV} Volts, yielding an execution current load value of ${factorX} Amps. Compute the circuit component's Resistance.`;
+                    opts = [`${targetV + 2} Ohms`, `${targetV * 2} Ohms`, `${calcR} Ohms`];
                     corrIdx = 2;
                 }
             } 
             else if (selectedModule === 'kcl') {
-                let sumIn = valA + valB;
-                let split1 = valA;
-                let split2 = valB;
+                let combinedIn = factorX + factorY;
                 if (currentQCount % 2 === 0) {
-                    qText = `[Level ${currentLvl} - Q${currentQCount}] Inside an active circuit junction node, two branches enter carrying current tracks of ${split1}A and ${split2}A. According to KCL, what total current leaves the central node junction?`;
-                    opts = [`${sumIn} Amps`, `${Math.abs(split1 - split2)} Amps`, `${sumIn * 2} Amps`];
+                    qText = `[Level ${currentLvl} - Junction Matrix] A complex multi-node schematic registers two converging incoming sub-branch load currents calculating at exactly ${factorX}A and ${factorY}A. Apply Kirchhoff's Current Law to find the escaping terminal vector output.`;
+                    opts = [`${combinedIn} Amps`, `${Math.abs(factorX - factorY)} Amps`, `${combinedIn * 2} Amps`];
                     corrIdx = 0;
                 } else {
-                    qText = `[Level ${currentLvl} - Q${currentQCount}] A multi-line central node receives a massive feed load of ${sumIn} Amps. If one out-branch track drains exactly ${split1} Amps, find the remaining current draining out through branch line 2.`;
-                    opts = [`${sumIn + split1} Amps`, `${split2} Amps`, `0 Amps`];
+                    qText = `[Level ${currentLvl} - Node Drainage] A converging junction grid receives an absolute continuous feed stream total of ${combinedIn} Amps. Secondary telemetry records show that branch line alpha channels precisely ${factorX} Amps out. Find the remaining load path flow.`;
+                    opts = [`${combinedIn + factorX} Amps`, `${factorY} Amps`, `0 Amps`];
                     corrIdx = 1;
                 }
             } 
             else if (selectedModule === 'kvl') {
-                let totalV = valA * 10;
-                let drop1 = valA * 4;
-                let drop2 = valA * 3;
-                let remV = totalV - (drop1 + drop2);
+                let totalLoopEMF = factorX * 8;
+                let staticDropA = factorX * 3;
+                let staticDropB = factorX * 2;
+                let targetDropX = totalLoopEMF - (staticDropA + staticDropB);
+                
                 if (currentQCount % 2 === 0) {
-                    qText = `[Level ${currentLvl} - Q${currentQCount}] A closed circuit loop network holds a source supply EMF value of ${totalV}V. Resistor 1 and Resistor 2 claim drops of ${drop1}V and ${drop2}V respectively. Find the remaining loop drop balance according to KVL parameters.`;
-                    opts = [`${remV + 10} Volts`, `${totalV} Volts`, `${remV} Volts`];
+                    qText = `[Level ${currentLvl} - Mesh Closed Loop] A continuous distributed circuit network mesh maps an integrated EMF power source rating of ${totalLoopEMF}V. Internal monitoring registers clear load point drops measuring ${staticDropA}V and ${staticDropB}V. Calculate the matching residual loop potential drop.`;
+                    opts = [`${targetDropX + 12} Volts`, `${totalLoopEMF} Volts`, `${targetDropX} Volts`];
                     corrIdx = 2;
                 } else {
-                    let combinedDrops = drop1 + drop2 + remV;
-                    qText = `[Level ${currentLvl} - Q${currentQCount}] KVL verification loop analysis scan: The total individual load voltage drop track lines compute into ${drop1}V, ${drop2}V, and ${remV}V sequentially inside a simple mesh loop. What total network source supply voltage EMF satisfies KVL node loop zero equality?`;
-                    opts = [`${combinedDrops} Volts`, `${Math.abs(drop1-drop2)} Volts`, `${combinedDrops * 2} Volts`];
+                    let totalSumV = staticDropA + staticDropB + targetDropX;
+                    qText = `[Level ${currentLvl} - Telemetry Balancing] Structural vector calculations identify three successive series-connected component drops evaluating into exact values of ${staticDropA}V, ${staticDropB}V, and ${targetDropX}V. Determine the source potential required to satisfy KVL loop properties.`;
+                    opts = [`${totalSumV} Volts`, `${Math.abs(staticDropA - staticDropB)} Volts`, `${totalSumV * 2} Volts`];
                     corrIdx = 0;
                 }
             } 
             else {
-                let topics = [
-                    { q: "What security element prevents localized appliance network fire hazards from line insulation breakdown overcurrents?", o: ["Bare copper bypass hook", "Proper caliber Safety Fuse / Circuit Breaker", "Paper insulation wrapping"], c: 1 },
-                    { q: "When managing terminal testing setups inside high dynamic magnetic power arrays, what item protects operators?", o: ["Steel mesh chainmail gloves", "Fully insulated rubber safety equipment gloves", "Wet handling towels"], c: 1 },
-                    { q: "If an operator experiences electrical short circuit contact lock down, what is the instant first rescue baseline instruction?", o: ["Pour ground tap water down", "Physically drag them immediately with bare arms", "Isolate core mains energy breakers safely instantly"], c: 2 },
-                    { q: "What core parameter determines why touch operations on operational instrumentation switch panels should strictly avoid wet floor setups?", o: ["Water increases structural resistance", "Moisture severely scales down ground isolation insulation resistance increasing path current", "Water decreases line frequency metrics"], c: 1 }
+                let safetyBanks = [
+                    { q: "Which active safety integration architecture is explicitly tailored to prevent localized fire hazards caused by branch insulation breakdown overload faults?", o: ["Bare copper grounding link bypassing fuses", "Calibrated overcurrent Safety Fuse or Circuit Breaker unit", "High density protective tracking paper layouts"], c: 1 },
+                    { q: "When working near energized electrical conductors, what type of personal protective equipment (PPE) is critical for hand isolation protection?", o: ["Standard steel-reinforced fabrication work gloves", "Dielectric-rated fully insulated rubber safety gloves", "Moisturized woven canvas antistatic handling wraps"], c: 1 },
+                    { q: "During an active industrial emergency where an operative remains locked under structural live conductor path contact, what is the primary protocol?", o: ["Douse the terminal contact field with running mains water", "Manually grip the victim's bare skin to break connection forces", "Isolate core upstream distribution safety breakers immediately"], c: 2 },
+                    { q: "Why must substation instrumentation switch operations completely avoid areas with standing water or excessive moisture fields?", o: ["Water increases total load wire path system impedance resistance", "Moisture decreases ground isolation resistance, creating a high-risk current path through the operator", "Water shifts alternating current source execution frequency metrics"], c: 1 }
                 ];
-                let baseSafe = topics[(currentLvl + currentQCount) % topics.length];
-                qText = `[Level ${currentLvl} - Q${currentQCount}] ${baseSafe.q}`;
-                opts = baseSafe.o;
-                corrIdx = baseSafe.c;
+                let structuralPick = safetyBanks[(currentLvl + currentQCount) % safetyBanks.length];
+                qText = `[Level ${currentLvl} - Protocol Alert] ${structuralPick.q}`;
+                opts = structuralPick.o;
+                corrIdx = structuralPick.c;
             }
 
             activeQuestionObj = { question: qText, options: opts, correct: corrIdx };
@@ -482,31 +507,51 @@
                 const btn = document.createElement("button");
                 btn.innerText = opt;
                 btn.classList.add("option-btn");
-                btn.addEventListener("click", () => evalAnswer(idx, btn));
+                btn.addEventListener("click", () => highlightSelection(idx, btn));
                 container.appendChild(btn);
             });
 
             startTimer();
         }
 
-        function evalAnswer(selIdx, targetBtn) {
-            clearInterval(countdownTimer);
+        function highlightSelection(idx, btn) {
+            // Remove previous choice styling safely
             const btns = document.querySelectorAll(".option-btn");
-            btns.forEach(b => b.disabled = true);
+            btns.forEach(b => b.classList.remove("selected-option"));
+            
+            // Lock target locally
+            selectedIndex = idx;
+            btn.classList.add("selected-option");
+        }
 
-            if (selIdx === activeQuestionObj.correct) {
-                targetBtn.classList.add("correct");
+        submitBtn.addEventListener("click", () => {
+            if (selectedIndex === null) {
+                alert("🚨 Choose your choice option response first before submission track!");
+                return;
+            }
+
+            clearInterval(countdownTimer);
+            submitBtn.classList.add("hidden");
+            
+            const btns = document.querySelectorAll(".option-btn");
+            btns.forEach(b => {
+                b.disabled = true;
+                b.classList.remove("selected-option");
+            });
+
+            if (selectedIndex === activeQuestionObj.correct) {
+                btns[selectedIndex].classList.add("correct");
                 runningScore += 10;
                 correctInThisLevel++;
                 document.getElementById("lvl-correct-counter").innerText = correctInThisLevel;
             } else {
-                targetBtn.classList.add("wrong");
+                btns[selectedIndex].classList.add("wrong");
                 btns[activeQuestionObj.correct].classList.add("correct");
             }
-            document.getElementById("next-btn").classList.remove("hidden");
-        }
+            nextBtn.classList.remove("hidden");
+        });
 
-        document.getElementById("next-btn").addEventListener("click", () => {
+        nextBtn.addEventListener("click", () => {
             if (currentQCount < 10) {
                 currentQCount++;
                 generateAndLoadQuestion();

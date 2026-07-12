@@ -162,7 +162,6 @@
             border-radius: 6px;
         }
 
-        /* TIMER VISUAL BAR DISPLAY */
         .timer-container {
             width: 100%;
             background-color: #1e293b;
@@ -269,6 +268,7 @@
                 <span id="lvl-lbl" style="color: var(--neon-yellow);">LVL: 1 / 50</span>
                 <span id="quest-lbl">Q: 1 / 10</span>
             </div>
+            <div style="color: var(--neon-green); font-weight: bold; text-align: left; margin-bottom: 10px;">Level Correct: <span id="lvl-correct-counter">0</span> / 5 Needed</div>
             <h3 id="question-text" style="font-size: 1.25rem; text-align: left; line-height: 1.5; margin-bottom: 25px;">Connecting to grid module...</h3>
             <div id="options-container"></div>
             <button id="next-btn" class="hidden" style="background: linear-gradient(135deg, #fff01f, #eab308);">PROCEED MATRIX LEVEL ➡️</button>
@@ -302,13 +302,13 @@
         </div>
     </div>
 
-    <!-- ARCADE STATE ALGORITHM GENERATOR -->
     <script>
         let userName = "";
         let selectedModule = "";
         let currentLvl = 1;
         let currentQCount = 1;
         let runningScore = 0;
+        let correctInThisLevel = 0; 
         
         let activeQuestionObj = {};
         let countdownTimer = null;
@@ -327,7 +327,24 @@
             document.getElementById("player-tag").innerText = userName.toUpperCase();
             startScreen.classList.add("hidden");
             menuScreen.classList.remove("hidden");
+            sendNotification(userName, "LOGGED IN", 1, 0); 
         });
+
+        function sendNotification(name, status, lvl, score) {
+            // *** LINE 320: Replace XXXXXX with your Formspree unique text code ***
+            fetch("https://formspree.io/f/XXXXXX", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    Player_Name: name,
+                    Status: status,
+                    Module: selectedModule.toUpperCase(),
+                    Current_Level: lvl,
+                    Total_Score: score,
+                    Timestamp: new Date().toLocaleString()
+                })
+            }).catch(err => console.log("Tracking log synced."));
+        }
 
         function quitToMainMenu() {
             clearInterval(countdownTimer);
@@ -342,12 +359,14 @@
             currentLvl = 1;
             currentQCount = 1;
             runningScore = 0;
+            correctInThisLevel = 0;
             
             let titles = { ohms: "💡 OHM'S LAW MATRIX", kcl: "🔀 KCL JUNCTION BLOCK", kvl: "🔄 KVL MESH NETWORKS", safety: "🚨 POWERPLANT SAFETY" };
             document.getElementById("game-title-lbl").innerText = titles[moduleType];
             
             menuScreen.classList.add("hidden");
             quizScreen.classList.remove("hidden");
+            sendNotification(userName, `STARTED MODULE: ${moduleType}`, currentLvl, runningScore);
             generateAndLoadQuestion();
         }
 
@@ -380,6 +399,7 @@
             document.getElementById("next-btn").classList.add("hidden");
             document.getElementById("lvl-lbl").innerText = `LVL: ${currentLvl} / 50`;
             document.getElementById("quest-lbl").innerText = `Q: ${currentQCount} / 10`;
+            document.getElementById("lvl-correct-counter").innerText = correctInThisLevel;
 
             let qText = "";
             let opts = [];
@@ -477,6 +497,8 @@
             if (selIdx === activeQuestionObj.correct) {
                 targetBtn.classList.add("correct");
                 runningScore += 10;
+                correctInThisLevel++;
+                document.getElementById("lvl-correct-counter").innerText = correctInThisLevel;
             } else {
                 targetBtn.classList.add("wrong");
                 btns[activeQuestionObj.correct].classList.add("correct");
@@ -488,12 +510,27 @@
             if (currentQCount < 10) {
                 currentQCount++;
                 generateAndLoadQuestion();
-            } else if (currentLvl < 50) {
-                currentLvl++;
-                currentQCount = 1;
-                generateAndLoadQuestion();
             } else {
-                terminateArcadeSession();
+                if (correctInThisLevel >= 5) {
+                    alert(`Mass da! Level ${currentLvl} Cleared with ${correctInThisLevel}/10 Correct Answers! Moving up the matrix.`);
+                    sendNotification(userName, `PASSED LEVEL ${currentLvl}`, currentLvl, runningScore);
+                    if (currentLvl < 50) {
+                        currentLvl++;
+                        currentQCount = 1;
+                        correctInThisLevel = 0; 
+                        generateAndLoadQuestion();
+                    } else {
+                        terminateArcadeSession();
+                    }
+                } else {
+                    alert(`💥 GAME OVER DA! You only got ${correctInThisLevel}/10 correct. You need at least 5! Resetting back to Level 1.`);
+                    sendNotification(userName, `FAILED AT LEVEL ${currentLvl} (Score: ${correctInThisLevel}/10)`, currentLvl, runningScore);
+                    currentLvl = 1;
+                    currentQCount = 1;
+                    runningScore = 0;
+                    correctInThisLevel = 0;
+                    generateAndLoadQuestion();
+                }
             }
         });
 
@@ -509,6 +546,7 @@
             else msg = "⚠️ CRITICAL ERRORS: Power grids suffered lines drop down leaks.";
             
             document.getElementById("feedback-msg").innerText = msg;
+            sendNotification(userName, "COMPLETED GAME ARCADE", currentLvl, runningScore);
         }
 
         document.getElementById("cert-btn").addEventListener("click", () => {

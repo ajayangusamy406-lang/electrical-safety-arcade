@@ -45,6 +45,7 @@
             box-shadow: 0 0 35px rgba(0, 240, 255, 0.2);
             border: 2px solid var(--neon-blue);
             text-align: center;
+            position: relative;
         }
 
         .hidden { display: none !important; }
@@ -93,7 +94,6 @@
             transform: translateY(-2px);
         }
 
-        /* Category Grid */
         .mode-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -153,12 +153,43 @@
         .quiz-header {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-weight: bold;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             color: var(--neon-blue);
             background: rgba(11, 15, 25, 0.6);
             padding: 10px 15px;
             border-radius: 6px;
+        }
+
+        /* TIMER VISUAL BAR DISPLAY */
+        .timer-container {
+            width: 100%;
+            background-color: #1e293b;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .timer-bar {
+            width: 100%;
+            height: 8px;
+            background: linear-gradient(90deg, var(--neon-yellow), var(--neon-red));
+            transition: width 1s linear;
+        }
+
+        .top-action-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .home-btn {
+            background: linear-gradient(135deg, #ef4444, #991b1b) !important;
+            color: white !important;
+            width: auto !important;
+            padding: 8px 16px !important;
+            margin-top: 0 !important;
+            font-size: 13px !important;
         }
 
         .score-box {
@@ -202,28 +233,37 @@
                 <div class="mode-btn" onclick="selectArcade('ohms')">
                     <span style="font-size: 2rem;">💡</span>
                     <span>OHM'S LAW MATRIX</span>
-                    <small style="color: #64748b;">50 Levels • R & V calculations</small>
+                    <small style="color: #64748b;">50 Levels • 30s Per Q</small>
                 </div>
                 <div class="mode-btn" onclick="selectArcade('kcl')">
                     <span style="font-size: 2rem;">🔀</span>
                     <span>KCL JUNCTION BLOCK</span>
-                    <small style="color: #64748b;">50 Levels • Node Current Logic</small>
+                    <small style="color: #64748b;">50 Levels • 30s Per Q</small>
                 </div>
                 <div class="mode-btn" onclick="selectArcade('kvl')">
                     <span style="font-size: 2rem;">🔄</span>
                     <span>KVL MESH NETWORKS</span>
-                    <small style="color: #64748b;">50 Levels • Loop Voltage Droppers</small>
+                    <small style="color: #64748b;">50 Levels • 30s Per Q</small>
                 </div>
                 <div class="mode-btn" onclick="selectArcade('safety')">
                     <span style="font-size: 2rem;">🚨</span>
                     <span>POWERPLANT SAFETY</span>
-                    <small style="color: #64748b;">50 Levels • Hazard Avoidance</small>
+                    <small style="color: #64748b;">50 Levels • 30s Per Q</small>
                 </div>
             </div>
         </div>
 
         <!-- PHASE 3: CORE MARATHON QUIZ ENGINE -->
         <div id="quiz-screen" class="card hidden">
+            <div class="top-action-bar">
+                <button class="home-btn" onclick="quitToMainMenu()">🚪 QUIT TO MENU</button>
+                <div style="color: var(--neon-red); font-weight: bold; font-size: 1.1rem;">⏱️ TIME: <span id="timer-text">30</span>s</div>
+            </div>
+            
+            <div class="timer-container">
+                <div id="t-bar" class="timer-bar"></div>
+            </div>
+
             <div class="quiz-header">
                 <span id="game-title-lbl">💡 OHMS LAW</span>
                 <span id="lvl-lbl" style="color: var(--neon-yellow);">LVL: 1 / 50</span>
@@ -241,7 +281,7 @@
             <div class="score-box"><span id="final-score">0 / 500</span></div>
             <p id="feedback-msg">Engine tuning checked!</p>
             <button id="cert-btn" style="background: linear-gradient(135deg, #39ff14, #059669);">👑 PRINT ARCADE DIPLOMA</button>
-            <button onclick="location.reload()" style="background: #334155; color: #fff; margin-top: 10px;">🎮 MAIN MATRIX MENU</button>
+            <button onclick="quitToMainMenu()" style="background: #334155; color: #fff; margin-top: 10px;">🎮 MAIN MATRIX MENU</button>
         </div>
 
         <!-- CERTIFICATE FRAME -->
@@ -258,6 +298,7 @@
                 </div>
             </div>
             <button onclick="window.print()">🖨️ SYSTEM PRINT DEVICE DOWNLOAD</button>
+            <button onclick="quitToMainMenu()" style="background: #334155; color: #fff; margin-top: 10px;">🎮 RETURN TO MENU</button>
         </div>
     </div>
 
@@ -269,10 +310,10 @@
         let currentQCount = 1;
         let runningScore = 0;
         
-        // Active Question Tracker Matrix Holder
         let activeQuestionObj = {};
+        let countdownTimer = null;
+        let secondsLeft = 30;
 
-        // UI Access Hooks
         const startScreen = document.getElementById("start-screen");
         const menuScreen = document.getElementById("menu-screen");
         const quizScreen = document.getElementById("quiz-screen");
@@ -288,6 +329,14 @@
             menuScreen.classList.remove("hidden");
         });
 
+        function quitToMainMenu() {
+            clearInterval(countdownTimer);
+            quizScreen.classList.add("hidden");
+            resultScreen.classList.add("hidden");
+            certificateScreen.classList.add("hidden");
+            menuScreen.classList.remove("hidden");
+        }
+
         function selectArcade(moduleType) {
             selectedModule = moduleType;
             currentLvl = 1;
@@ -302,7 +351,31 @@
             generateAndLoadQuestion();
         }
 
-        // DYNAMIC PATTERN GENERATOR (Generates distinct parameters dynamically based on current level and question number)
+        function startTimer() {
+            clearInterval(countdownTimer);
+            secondsLeft = 30;
+            document.getElementById("timer-text").innerText = secondsLeft;
+            document.getElementById("t-bar").style.width = "100%";
+
+            countdownTimer = setInterval(() => {
+                secondsLeft--;
+                document.getElementById("timer-text").innerText = secondsLeft;
+                document.getElementById("t-bar").style.width = (secondsLeft / 30 * 100) + "%";
+
+                if (secondsLeft <= 0) {
+                    clearInterval(countdownTimer);
+                    handleTimeOut();
+                }
+            }, 1000);
+        }
+
+        function handleTimeOut() {
+            const btns = document.querySelectorAll(".option-btn");
+            btns.forEach(b => b.disabled = true);
+            btns[activeQuestionObj.correct].classList.add("correct");
+            document.getElementById("next-btn").classList.remove("hidden");
+        }
+
         function generateAndLoadQuestion() {
             document.getElementById("next-btn").classList.add("hidden");
             document.getElementById("lvl-lbl").innerText = `LVL: ${currentLvl} / 50`;
@@ -312,24 +385,23 @@
             let opts = [];
             let corrIdx = 0;
             
-            // Seed base values using Level and Question metrics
             let valA = (currentLvl * 2) + currentQCount + 2; 
             let valB = currentLvl + currentQCount;
 
             if (selectedModule === 'ohms') {
                 let type = currentQCount % 3;
-                if (type === 0) { // V = I * R
+                if (type === 0) {
                     let v = valA * valB;
                     qText = `[Level ${currentLvl} - Q${currentQCount}] A network circuit block loop has an active Current (I) of ${valA} Amps and total system Resistance (R) of ${valB} Ohms. Find the total supply Voltage (V) across nodes.`;
                     opts = [`${v} Volts`, `${valA + valB} Volts`, `${Math.max(1, Math.round(v/2))} Volts`];
                     corrIdx = 0;
-                } else if (type === 1) { // I = V / R
+                } else if (type === 1) {
                     let r = Math.max(2, valB);
                     let v = r * valA;
                     qText = `[Level ${currentLvl} - Q${currentQCount}] A loop network registers an electrical potential difference of ${v} Volts with internal mesh Resistance of ${r} Ohms. Calculate loop current flow line data.`;
                     opts = [`${Math.round(v*r)} Amps`, `${valA} Amps`, `${(v+r)} Amps`];
                     corrIdx = 1;
-                } else { // R = V / I
+                } else {
                     let i = Math.max(2, valB);
                     let v = i * valA;
                     qText = `[Level ${currentLvl} - Q${currentQCount}] Potential drops at node metrics read ${v} Volts while current registers exactly ${i} Amps. Evaluate active load network structural resistance value.`;
@@ -367,7 +439,7 @@
                     corrIdx = 0;
                 }
             } 
-            else { // SAFETY
+            else {
                 let topics = [
                     { q: "What security element prevents localized appliance network fire hazards from line insulation breakdown overcurrents?", o: ["Bare copper bypass hook", "Proper caliber Safety Fuse / Circuit Breaker", "Paper insulation wrapping"], c: 1 },
                     { q: "When managing terminal testing setups inside high dynamic magnetic power arrays, what item protects operators?", o: ["Steel mesh chainmail gloves", "Fully insulated rubber safety equipment gloves", "Wet handling towels"], c: 1 },
@@ -381,8 +453,8 @@
             }
 
             activeQuestionObj = { question: qText, options: opts, correct: corrIdx };
-
             document.getElementById("question-text").innerText = qText;
+            
             const container = document.getElementById("options-container");
             container.innerHTML = "";
 
@@ -393,9 +465,12 @@
                 btn.addEventListener("click", () => evalAnswer(idx, btn));
                 container.appendChild(btn);
             });
+
+            startTimer();
         }
 
         function evalAnswer(selIdx, targetBtn) {
+            clearInterval(countdownTimer);
             const btns = document.querySelectorAll(".option-btn");
             btns.forEach(b => b.disabled = true);
 
@@ -423,6 +498,7 @@
         });
 
         function terminateArcadeSession() {
+            clearInterval(countdownTimer);
             quizScreen.classList.add("hidden");
             resultScreen.classList.remove("hidden");
             

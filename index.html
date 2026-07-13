@@ -5,249 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>⚡ Advanced Electrical Engineering Arcade Matrix</title>
     
-    <style>
-        :root {
-            --bg-space: #020617;
-            --neon-blue: #00ffff;
-            --neon-green: #39ff14;
-            --neon-pink: #ff007f;
-            --neon-yellow: #ffea00;
-            --panel-glass: rgba(15, 23, 42, 0.85);
-        }
-
-        @keyframes matrixGridMove {
-            0% { background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px; }
-            100% { background-position: 40px 40px, 60px 60px, 20px 20px, 20px 20px; }
-        }
-
-        @keyframes neonPulse {
-            0%, 100% { box-shadow: 0 0 25px rgba(0, 255, 255, 0.2); border-color: var(--neon-blue); }
-            50% { box-shadow: 0 0 45px rgba(0, 255, 255, 0.5); border-color: #0b66c3; }
-        }
-
-        @keyframes alertPulse {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--neon-pink)); }
-            50% { transform: scale(1.03); filter: drop-shadow(0 0 20px var(--neon-pink)); }
-        }
-
-        @keyframes slideIn {
-            from { transform: translateY(30px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes starGlow {
-            0% { transform: scale(0.8); opacity: 0.5; }
-            50% { transform: scale(1.2); filter: drop-shadow(0 0 15px var(--neon-yellow)); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        body {
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            background-color: var(--bg-space);
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.08) 1px, transparent 1px),
-                radial-gradient(circle at 20% 80%, rgba(255, 0, 127, 0.05) 2px, transparent 2px),
-                linear-gradient(rgba(0, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.02) 1px, transparent 1px);
-            background-size: 40px 40px, 60px 60px, 20px 20px, 20px 20px;
-            animation: matrixGridMove 12s linear infinite;
-            color: #f3f4f6;
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 850px;
-        }
-
-        .card {
-            background: var(--panel-glass);
-            border: 2px solid var(--neon-blue);
-            border-radius: 20px;
-            padding: 35px;
-            backdrop-filter: blur(16px);
-            text-align: center;
-            animation: neonPulse 6s ease-in-out infinite, slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .hidden { display: none !important; }
-
-        h1 {
-            font-size: 2.3rem;
-            letter-spacing: 3px;
-            color: var(--neon-blue);
-            text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-            margin-top: 0;
-            text-transform: uppercase;
-        }
-
-        p { color: #9ca3af; font-size: 1.1rem; }
-
-        input[type="text"] {
-            width: 80%;
-            padding: 15px;
-            background: #090d16;
-            border: 2px solid #374151;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 16px;
-            text-align: center;
-            margin: 25px 0;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-        input[type="text"]:focus {
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-        }
-
-        button {
-            background: linear-gradient(135deg, var(--neon-blue), #0b66c3);
-            color: #000;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        button:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.6);
-        }
-        button:active { transform: translateY(-1px) scale(0.99); }
-
-        .topic-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 15px;
-            margin-top: 25px;
-            max-height: 420px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
-        .topic-grid::-webkit-scrollbar { width: 6px; }
-        .topic-grid::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
-
-        .topic-card {
-            background: rgba(30, 41, 59, 0.6);
-            border: 1px solid #334155;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: left;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: all 0.3s ease;
-        }
-        .topic-card:hover {
-            border-color: var(--neon-pink);
-            background: rgba(255, 0, 127, 0.08);
-            transform: translateX(8px);
-            box-shadow: -5px 0 15px rgba(255, 0, 127, 0.3);
-        }
-
-        .topic-info h3 { margin: 0 0 5px 0; color: #fff; font-size: 1.2rem; }
-        .topic-info small { color: #94a3b8; }
-
-        .lvl-badge {
-            background: #0f172a;
-            padding: 6px 15px;
-            border-radius: 20px;
-            border: 1px solid var(--neon-blue);
-            font-weight: bold;
-            color: var(--neon-yellow);
-            transition: all 0.3s ease;
-        }
-        .topic-card:hover .lvl-badge {
-            border-color: var(--neon-yellow);
-            box-shadow: 0 0 10px var(--neon-yellow);
-        }
-
-        .option-btn {
-            background: rgba(15, 23, 42, 0.8);
-            color: #cbd5e1;
-            border: 2px solid #475569;
-            width: 100%;
-            text-align: left;
-            margin-bottom: 12px;
-            padding: 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .option-btn:hover {
-            border-color: var(--neon-blue);
-            background: rgba(0, 255, 255, 0.05);
-            transform: scale(1.01);
-        }
-        .selected-option { 
-            border-color: var(--neon-yellow) !important; 
-            background: rgba(255, 234, 0, 0.15) !important;
-            box-shadow: 0 0 15px rgba(255, 234, 0, 0.2);
-        }
-        .correct { 
-            background: linear-gradient(135deg, #064e3b, #10b981) !important; 
-            color: #fff !important; 
-            border-color: var(--neon-green) !important;
-            box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
-        }
-        .wrong { 
-            background: linear-gradient(135deg, #7f1d1d, #ef4444) !important; 
-            color: #fff !important; 
-            border-color: var(--neon-pink) !important;
-            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
-        }
-
-        .star-rating { font-size: 2.5rem; color: #334155; margin: 15px 0; }
-        .star-rating .gold { 
-            color: var(--neon-yellow); 
-            animation: starGlow 0.5s ease-out forwards;
-        }
-
-        .header-meta {
-            display: flex;
-            justify-content: space-between;
-            background: rgba(0,0,0,0.4);
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
-        }
-
-        .timer-track { width: 100%; height: 6px; background: #1e293b; border-radius: 3px; margin-bottom: 25px; overflow: hidden; }
-        .timer-fill { width: 100%; height: 100%; background: linear-gradient(90deg, var(--neon-pink), #ef4444); transition: width 1s linear; }
-
-        .action-container { display: flex; gap: 15px; margin-top: 20px; }
-
-        #lvl-status-title {
-            animation: alertPulse 2s ease-in-out infinite;
-        }
-
-        /* 🎓 CERTIFICATE INTERFACE PRINT LAYOUT */
-        .cert-container {
-            background: #fff;
-            color: #0f172a;
-            padding: 40px;
-            border: 10px double #1e293b;
-            border-radius: 8px;
-            margin-top: 20px;
-            position: relative;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
-            animation: slideIn 0.7s ease-out;
-        }
-        .cert-header h2 { font-family: 'Georgia', serif; font-size: 2rem; color: #0f172a; margin: 0; text-transform: uppercase; }
-        .cert-badge-gold { font-size: 3.5rem; color: #d97706; margin: 15px 0; animation: starGlow 1s ease-out infinite alternate; }
-    </style>
+    <!-- Link to external style sheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -301,8 +60,8 @@
         <!-- PHASE 3: ACTIVE ARCADE ENGINE -->
         <div id="engine-card" class="card hidden">
             <div class="header-meta">
-                <span id="meta-topic" style="color: var(--neon-blue); font-weight: bold;">TOPIC</span>
-                <span id="meta-level" style="color: var(--neon-yellow); font-weight: bold;">LEVEL: 1 / 45</span>
+                <span id="meta-topic" style="color: var(--neon-green); font-weight: bold;">TOPIC</span>
+                <span id="meta-level" style="color: #eab308; font-weight: bold;">LEVEL: 1 / 45</span>
                 <span id="meta-qcount" style="color: #fff;">Q: 1 / 5</span>
             </div>
             <div class="timer-track"><div id="timer-fill-bar" class="timer-fill"></div></div>
@@ -448,36 +207,83 @@
             let selections = [];
             let ans = 0;
 
-            let seedX = (currentLvl * 7) + (queryTracker * 3) + 5;
-            let seedY = (currentLvl * 3) + queryTracker + 2;
+            // Generate totally randomized base values per question index to guarantee uniqueness
+            let multiplier = Math.floor(Math.random() * 5) + 2; 
+            let seedX = (currentLvl * 3) + (queryTracker * multiplier) + 4;
+            let seedY = (currentLvl * 2) + queryTracker + 3;
 
+            // Question text templates pool mapped to queryTracker to force physical string variation!
             if (currentTopic === 'ohms') {
                 let v = seedX * seedY;
-                text = `[Ohm's Law Matrix - Lvl ${currentLvl}] A high-voltage system registers a monitored steady state current flow of exactly ${seedX} Amps, passing through a measured core impedance load of ${seedY} Ohms. Calculate the ultimate terminal EMF drop across the interface.`;
-                selections = [`${v} Volts`, `${v + 15} Volts`, `${v - 5} Volts`]; ans = 0;
-            } else if (currentTopic === 'kcl') {
+                if(queryTracker % 2 === 0) {
+                    text = `[Ohm's Law Q-${queryTracker}] A diagnostic test benchmarks an electric sub-panel routing a current of exactly ${seedX} Amps into a dynamic load terminal resistance calibrated at ${seedY} Ohms. Find the total electromotive drop.`;
+                } else {
+                    text = `[Ohm's Law Q-${queryTracker}] A primary transmission line delivers power with a constant measured current of ${seedX} A across a shunt resistance unit rated at ${seedY} Ohms. Calculate the localized voltage drop.`;
+                }
+                selections = [`${v} Volts`, `${v + 12} Volts`, `${v - 7} Volts`]; ans = 0;
+            } 
+            else if (currentTopic === 'kcl') {
                 let sum = seedX + seedY;
-                text = `[Kirchhoff Current Vector - Lvl ${currentLvl}] At an architectural multi-wire sub-station junction node, tracking arrays observe entry currents inputting ${seedX}A and ${seedY}A paths respectively. Solve for the cumulative output line metrics.`;
-                selections = [`${Math.abs(seedX-seedY)} A`, `${sum} Amps`, `${sum + 20} A`]; ans = 1;
-            } else if (currentTopic === 'kvl') {
-                let v_source = seedX * 5; let drop = seedX * 2; let remainder = v_source - drop;
-                text = `[Kirchhoff Voltage Loop - Lvl ${currentLvl}] Within a closed processing circuit mesh loop, a source component injects ${v_source}V potential energy. The primary diagnostic load registers a distinct drop of ${drop}V. Solve for the remaining line voltage drop.`;
-                selections = [`${remainder + 4} V`, `0 V`, `${remainder} Volts`]; ans = 2;
-            } else if (currentTopic === 'series') {
+                if(queryTracker % 2 === 0) {
+                    text = `[Kirchhoff Current Q-${queryTracker}] At a complex hardware node terminal, convergent input current lines register flow parameters of ${seedX}A and ${seedY}A respectively. Resolve the aggregate exiting line current.`;
+                } else {
+                    text = `[Kirchhoff Current Q-${queryTracker}] Two branches of an electrical bus grid channel structural current fields of ${seedX} Amps and ${seedY} Amps into a shared grounding node junction. Determine the combined system output.`;
+                }
+                selections = [`${Math.abs(seedX-seedY)} A`, `${sum} Amps`, `${sum + 15} A`]; ans = 1;
+            } 
+            else if (currentTopic === 'kvl') {
+                let v_source = seedX * 6; let drop = seedX * 2; let remainder = v_source - drop;
+                if(queryTracker % 2 === 0) {
+                    text = `[Kirchhoff Voltage Q-${queryTracker}] A closed distribution loop contains a standard supply rail dispensing ${v_source}V. If the main transformer reports a drop of ${drop}V, find the remaining voltage across the series load.`;
+                } else {
+                    text = `[Kirchhoff Voltage Q-${queryTracker}] Inside an experimental loop circuit, the generation component feeds ${v_source} Volts. An isolation switch causes a localized potential drop of ${drop} Volts. Calculate the terminal loop voltage.`;
+                }
+                selections = [`${remainder + 9} V`, `0 V`, `${remainder} Volts`]; ans = 2;
+            } 
+            else if (currentTopic === 'series') {
                 let r_eq = seedX + seedY;
-                text = `[Topology Network Array - Lvl ${currentLvl}] Two consecutive processing resistors with distinct track parameters measuring ${seedX} Ohms and ${seedY} Ohms are arranged in a pure continuous series structure. Solve for the exact combined input Equivalent Resistance.`;
-                selections = [`${r_eq} Ohms`, `${r_eq * 2} Ohms`, `${Math.floor(r_eq/2)} Ohms`]; ans = 0;
-            } else if (currentTopic === 'cap') {
+                if(queryTracker % 2 === 0) {
+                    text = `[Topology Array Q-${queryTracker}] A circuit grid links two inline linear microprocessors in series, possessing electrical resistance qualities of ${seedX} Ohms and ${seedY} Ohms. Calculate the total combined system impedance.`;
+                } else {
+                    text = `[Topology Array Q-${queryTracker}] An electrical control panel deploys a series network configuration using two heating elements measured at ${seedX} Ω and ${seedY} Ω. Determine the master equivalent resistance parameter.`;
+                }
+                selections = [`${r_eq} Ohms`, `${r_eq + 25} Ohms`, `${Math.floor(r_eq/3)} Ohms`]; ans = 0;
+            } 
+            else if (currentTopic === 'cap') {
                 let totalC = seedX + seedY;
-                text = `[Reactive Energy Spectrum - Lvl ${currentLvl}] A secondary shunt filter bank deploys two storage capacitive components coupled directly in a parallel network array layer, tracking values of ${seedX} uF and ${seedY} uF. Find the aggregate total storage matrix capacitance.`;
-                selections = [`${Math.abs(seedX-seedY)} uF`, `${totalC} uF`, `${totalC + 10} uF`]; ans = 1;
-            } else if (currentTopic === 'ac') {
-                let freq = 50 + currentLvl;
-                text = `[AC Alternating Phase - Lvl ${currentLvl}] An industrial vector generator cycles an alternating current flow grid matrix safely operating at a checked frequency limit of ${freq} Hz. Determine the precise Angular Frequency parameter ($w = 2\\pi f$).`;
-                selections = [`${(2 * 3.1416 * freq).toFixed(2)} rad/sec`, `${freq} rad/s`, `314.16 rad/sec`]; ans = 0;
-            } else {
-                text = `[Safety Shield protocol - Lvl ${currentLvl}] Under core dynamic high tension plant specifications, when safety equipment detects an unexpected continuous grounding residual voltage leakage spike exceeding standard metrics, what is the instant mechanical override sequence protocol?`;
-                selections = ["Increase main line impedance parameters", "Trigger automated circuit breakers via instantaneous ground fault isolation paths", "Manual safety override line dump"]; ans = 1;
+                if(queryTracker % 2 === 0) {
+                    text = `[Reactive Field Q-${queryTracker}] A set of dual safety backup capacitors are attached in a parallel topology stack within a motherboard, reading ${seedX} uF and ${seedY} uF. Find the absolute aggregate capacitance.`;
+                } else {
+                    text = `[Reactive Field Q-${queryTracker}] A signal conditioning system bridges two smooth electrolytic capacitors in parallel array lanes with capacities of ${seedX} microFarads and ${seedY} microFarads. Determine the cumulative capacitance.`;
+                }
+                selections = [`${Math.abs(seedX-seedY)} uF`, `${totalC} uF`, `${totalC * 2} uF`]; ans = 1;
+            } 
+            else if (currentTopic === 'ac') {
+                let freq = 50 + currentLvl + queryTracker;
+                if(queryTracker % 2 === 0) {
+                    text = `[AC Grid Q-${queryTracker}] A heavy alternating power rotor generates a stable system sine wave frequency calibrated to exactly ${freq} Hz. Extract the corresponding Angular Frequency matrix component ($w = 2\\pi f$).`;
+                } else {
+                    text = `[AC Grid Q-${queryTracker}] An absolute standard backup alternator feeds the power grid at a checked mechanical cycling frequency of ${freq} Hz. Calculate the active radian angular speed vector.`;
+                }
+                selections = [`${(2 * 3.1416 * freq).toFixed(2)} rad/sec`, `${freq} rad/s`, `314.16 rad/s`]; ans = 0;
+            } 
+            else {
+                if(queryTracker === 1) {
+                    text = `[Safety Protocol Q-1] During routine plant maintenance checks, a sudden thermal overloading is reported along the primary bus. What is the emergency reaction sequence?`;
+                    selections = ["Manually throttle branch variables", "Execute emergency bus isolation tie-breakers instantly", "Log event parameters without shutdown"]; ans = 1;
+                } else if(queryTracker === 2) {
+                    text = `[Safety Protocol Q-2] An insulation degradation fault is logged on high tension grid line ${seedX}. What dynamic safety interlock element activates immediately?`;
+                    selections = ["Increase step-up transformer output", "Deploy immediate Residual Current Ground Fault Breakers", "Toggle shunt reactor to manual mode"]; ans = 1;
+                } else if(queryTracker === 3) {
+                    text = `[Safety Protocol Q-3] High arc-flash hazards are discovered near sub-station console ${seedY}. Which procedure guarantees absolute safety for engineering staff?`;
+                    selections = ["Perform hot-line maintenance with iron bars", "Enforce full Lockout-Tagout (LOTO) and verify zero energy states", "Deploy handheld cooling fans"]; ans = 1;
+                } else if(queryTracker === 4) {
+                    text = `[Safety Protocol Q-4] A lightning strike hits lightning rod terminal ${seedX}. How does the safety matrix divert the lightning energy surge safely?`;
+                    selections = ["By routing through low-impedance ground earth mats", "By storing it in the capacitor bank array", "By isolating the main generator panel fully"]; ans = 0;
+                } else {
+                    text = `[Safety Protocol Q-5] If the automatic cooling pumps on emergency substation transformer ${seedY} fail, what automated backup sequence initiates?`;
+                    selections = ["Increase load variables on the transformer", "Trigger interlock load-shedding switches and sound audible klaxons", "Disable all system sensors"]; ans = 1;
+                }
             }
 
             activeQ = { question: text, options: selections, answerIdx: ans };
@@ -532,7 +338,7 @@
             let stars = starBox.querySelectorAll(".star");
             stars.forEach(s => s.classList.remove("gold"));
 
-            if(levelScore >= 3) { // 3 out of 5 required to pass
+            if(levelScore >= 3) {
                 document.getElementById("lvl-status-title").innerText = "⚡ LEVEL PASSED!";
                 document.getElementById("lvl-status-title").style.color = "var(--neon-green)";
                 let awarded = levelScore === 5 ? 3 : (levelScore >= 4 ? 2 : 1);
@@ -550,8 +356,8 @@
                 if(topicProgress[currentTopic] < 45) {
                     topicProgress[currentTopic]++;
                 } else if(topicProgress[currentTopic] === 45) {
-                    topicProgress[currentTopic] = 46; // Mark as complete
-                    setTimeout(() => { triggerCertificateGeneration(); }, 1200); // Auto show certificate on clearing lvl 45
+                    topicProgress[currentTopic] = 46; 
+                    setTimeout(() => { triggerCertificateGeneration(); }, 1200);
                 }
             } else {
                 document.getElementById("lvl-status-title").innerText = "💥 CRITICAL FAIL!";

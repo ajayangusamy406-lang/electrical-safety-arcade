@@ -3,27 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Advanced Electrical Engineering Engineering Arcade Matrix</title>
+    <title>⚡ Advanced Electrical Engineering Arcade Matrix</title>
     
     <style>
         :root {
-            --bg-space: #030712;
+            --bg-space: #020617;
             --neon-blue: #00ffff;
             --neon-green: #39ff14;
             --neon-pink: #ff007f;
             --neon-yellow: #ffea00;
-            --panel-glass: rgba(17, 24, 39, 0.9);
+            --panel-glass: rgba(15, 23, 42, 0.85);
+        }
+
+        @keyframes matrixGridMove {
+            0% { background-position: 0px 0px, 0px 0px, 0px 0px, 0px 0px; }
+            100% { background-position: 40px 40px, 60px 60px, 20px 20px, 20px 20px; }
+        }
+
+        @keyframes neonPulse {
+            0%, 100% { box-shadow: 0 0 25px rgba(0, 255, 255, 0.2); border-color: var(--neon-blue); }
+            50% { box-shadow: 0 0 45px rgba(0, 255, 255, 0.5); border-color: #0b66c3; }
+        }
+
+        @keyframes alertPulse {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--neon-pink)); }
+            50% { transform: scale(1.03); filter: drop-shadow(0 0 20px var(--neon-pink)); }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes starGlow {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.2); filter: drop-shadow(0 0 15px var(--neon-yellow)); }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         body {
             font-family: 'Segoe UI', Roboto, sans-serif;
             background-color: var(--bg-space);
             background-image: 
-                radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-                radial-gradient(circle at 20% 80%, rgba(255, 0, 127, 0.08) 2px, transparent 2px),
-                linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.08) 1px, transparent 1px),
+                radial-gradient(circle at 20% 80%, rgba(255, 0, 127, 0.05) 2px, transparent 2px),
+                linear-gradient(rgba(0, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 255, 0.02) 1px, transparent 1px);
             background-size: 40px 40px, 60px 60px, 20px 20px, 20px 20px;
+            animation: matrixGridMove 12s linear infinite;
             color: #f3f4f6;
             margin: 0;
             padding: 20px;
@@ -31,6 +58,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow-x: hidden;
         }
 
         .container {
@@ -41,11 +69,11 @@
         .card {
             background: var(--panel-glass);
             border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 35px rgba(0, 255, 255, 0.15);
             border-radius: 20px;
             padding: 35px;
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
             text-align: center;
+            animation: neonPulse 6s ease-in-out infinite, slideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .hidden { display: none !important; }
@@ -72,10 +100,11 @@
             text-align: center;
             margin: 25px 0;
             outline: none;
+            transition: all 0.3s ease;
         }
         input[type="text"]:focus {
             border-color: var(--neon-blue);
-            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
         }
 
         button {
@@ -88,12 +117,13 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(0, 255, 255, 0.5);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 255, 255, 0.6);
         }
+        button:active { transform: translateY(-1px) scale(0.99); }
 
         .topic-grid {
             display: grid;
@@ -108,8 +138,8 @@
         .topic-grid::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
 
         .topic-card {
-            background: rgba(31, 41, 55, 0.6);
-            border: 1px solid #374151;
+            background: rgba(30, 41, 59, 0.6);
+            border: 1px solid #334155;
             padding: 20px;
             border-radius: 12px;
             text-align: left;
@@ -117,69 +147,106 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.3s ease;
         }
         .topic-card:hover {
             border-color: var(--neon-pink);
-            background: rgba(255, 0, 127, 0.05);
+            background: rgba(255, 0, 127, 0.08);
+            transform: translateX(8px);
+            box-shadow: -5px 0 15px rgba(255, 0, 127, 0.3);
         }
 
         .topic-info h3 { margin: 0 0 5px 0; color: #fff; font-size: 1.2rem; }
-        .topic-info small { color: #9ca3af; }
+        .topic-info small { color: #94a3b8; }
 
         .lvl-badge {
-            background: #111827;
+            background: #0f172a;
             padding: 6px 15px;
             border-radius: 20px;
             border: 1px solid var(--neon-blue);
             font-weight: bold;
             color: var(--neon-yellow);
+            transition: all 0.3s ease;
+        }
+        .topic-card:hover .lvl-badge {
+            border-color: var(--neon-yellow);
+            box-shadow: 0 0 10px var(--neon-yellow);
         }
 
         .option-btn {
-            background: rgba(17, 24, 39, 0.8);
-            color: #e5e7eb;
-            border: 2px solid #4b5563;
+            background: rgba(15, 23, 42, 0.8);
+            color: #cbd5e1;
+            border: 2px solid #475569;
             width: 100%;
             text-align: left;
             margin-bottom: 12px;
             padding: 16px;
             border-radius: 10px;
             cursor: pointer;
+            transition: all 0.2s ease;
         }
-        .selected-option { border-color: var(--neon-yellow) !important; background: rgba(255, 234, 0, 0.1) !important; }
-        .correct { background: linear-gradient(135deg, #064e3b, #10b981) !important; color: #fff !important; border-color: var(--neon-green) !important; }
-        .wrong { background: linear-gradient(135deg, #7f1d1d, #ef4444) !important; color: #fff !important; border-color: var(--neon-pink) !important; }
+        .option-btn:hover {
+            border-color: var(--neon-blue);
+            background: rgba(0, 255, 255, 0.05);
+            transform: scale(1.01);
+        }
+        .selected-option { 
+            border-color: var(--neon-yellow) !important; 
+            background: rgba(255, 234, 0, 0.15) !important;
+            box-shadow: 0 0 15px rgba(255, 234, 0, 0.2);
+        }
+        .correct { 
+            background: linear-gradient(135deg, #064e3b, #10b981) !important; 
+            color: #fff !important; 
+            border-color: var(--neon-green) !important;
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+        }
+        .wrong { 
+            background: linear-gradient(135deg, #7f1d1d, #ef4444) !important; 
+            color: #fff !important; 
+            border-color: var(--neon-pink) !important;
+            box-shadow: 0 0 20px rgba(255, 0, 127, 0.4);
+        }
 
-        .star-rating { font-size: 2.5rem; color: #374151; margin: 15px 0; }
-        .star-rating .gold { color: var(--neon-yellow); text-shadow: 0 0 15px var(--neon-yellow); }
+        .star-rating { font-size: 2.5rem; color: #334155; margin: 15px 0; }
+        .star-rating .gold { 
+            color: var(--neon-yellow); 
+            animation: starGlow 0.5s ease-out forwards;
+        }
 
         .header-meta {
             display: flex;
             justify-content: space-between;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.4);
             padding: 12px 20px;
             border-radius: 8px;
             margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.2);
         }
 
-        .timer-track { width: 100%; height: 6px; background: #1f2937; border-radius: 3px; margin-bottom: 25px; overflow: hidden; }
-        .timer-fill { width: 100%; height: 100%; background: var(--neon-pink); transition: width 1s linear; }
+        .timer-track { width: 100%; height: 6px; background: #1e293b; border-radius: 3px; margin-bottom: 25px; overflow: hidden; }
+        .timer-fill { width: 100%; height: 100%; background: linear-gradient(90deg, var(--neon-pink), #ef4444); transition: width 1s linear; }
 
         .action-container { display: flex; gap: 15px; margin-top: 20px; }
 
-        /* 🎓 ARCHITECTURE LAYOUT FOR CERTIFICATE VIEW */
+        #lvl-status-title {
+            animation: alertPulse 2s ease-in-out infinite;
+        }
+
+        /* 🎓 CERTIFICATE INTERFACE PRINT LAYOUT */
         .cert-container {
             background: #fff;
-            color: #1e293b;
+            color: #0f172a;
             padding: 40px;
-            border: 10px double #0f172a;
+            border: 10px double #1e293b;
             border-radius: 8px;
             margin-top: 20px;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            animation: slideIn 0.7s ease-out;
         }
         .cert-header h2 { font-family: 'Georgia', serif; font-size: 2rem; color: #0f172a; margin: 0; text-transform: uppercase; }
-        .cert-badge-gold { font-size: 3.5rem; color: #d97706; margin: 15px 0; }
+        .cert-badge-gold { font-size: 3.5rem; color: #d97706; margin: 15px 0; animation: starGlow 1s ease-out infinite alternate; }
     </style>
 </head>
 <body>
@@ -188,7 +255,7 @@
         <!-- PHASE 1: LOGIN -->
         <div id="login-card" class="card">
             <h1>⚡ ENGINEERING ARCADE</h1>
-            <p>Initialize master sequence terminal link (7 Topics • 50 Levels Each)</p>
+            <p>Initialize master sequence terminal link (7 Topics • 45 Levels Each)</p>
             <input type="text" id="username-field" placeholder="⚡ ENTER REPOSITORY ACCESS ENGINEER TAG">
             <br>
             <button onclick="loginUser()">LAUNCH CORE MATRIX ➡️</button>
@@ -201,32 +268,32 @@
             
             <div class="topic-grid">
                 <div class="topic-card" onclick="startModule('ohms')">
-                    <div class="topic-info"><h3>💡 1. Ohm's Law Matrix Array</h3><small>Clear 50 Levels to unlock Certificate</small></div>
-                    <div class="lvl-badge" id="badge-ohms">LVL 1 / 50</div>
+                    <div class="topic-info"><h3>💡 1. Ohm's Law Matrix Array</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
+                    <div class="lvl-badge" id="badge-ohms">LVL 1 / 45</div>
                 </div>
                 <div class="topic-card" onclick="startModule('kcl')">
-                    <div class="topic-info"><h3>🔀 2. Kirchhoff's Current Law Node</h3><small>Clear 50 Levels to unlock Certificate</small></div>
-                    <div class="lvl-badge" id="badge-kcl">LVL 1 / 50</div>
+                    <div class="topic-info"><h3>🔀 2. Kirchhoff's Current Law Node</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
+                    <div class="lvl-badge" id="badge-kcl">LVL 1 / 45</div>
                 </div>
                 <div class="topic-card" onclick="startModule('kvl')">
-                    <div class="topic-info"><h3>🔄 3. Kirchhoff's Voltage Loop Mesh</h3><small>Clear 50 Levels to unlock Certificate</small></div>
-                    <div class="lvl-badge" id="badge-kvl">LVL 1 / 50</div>
+                    <div class="topic-info"><h3>🔄 3. Kirchhoff's Voltage Loop Mesh</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
+                    <div class="lvl-badge" id="badge-kvl">LVL 1 / 45</div>
                 </div>
                 <div class="topic-card" onclick="startModule('series')">
-                    <div class="topic-info"><h3>⛓️ 4. Series-Parallel Combinations</h3><small>Clear 50 Levels to unlock Certificate</small></div>
-                    <div class="lvl-badge" id="badge-series">LVL 1 / 50</div>
+                    <div class="topic-info"><h3>⛓️ 4. Series-Parallel Combinations</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
+                    <div class="lvl-badge" id="badge-series">LVL 1 / 45</div>
                 </div>
                 <div class="topic-card" onclick="startModule('cap')">
-                    <div class="topic-info"><h3>🔋 5. Capacitors & Inductors Field</h3><small>Clear 50 Levels to unlock Certificate</small></div>
-                    <div class="lvl-badge" id="badge-cap">LVL 1 / 50</div>
+                    <div class="topic-info"><h3>🔋 5. Capacitors & Inductors Field</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
+                    <div class="lvl-badge" id="badge-cap">LVL 1 / 45</div>
                 </div>
                 <div class="topic-card" onclick="startModule('ac')">
-                    <div class="topic-info"><h3>🌊 6. AC Alternating Grid Basics</h3><small>Clear 50 Levels to unlock Certificate</small></div>
-                    <div class="lvl-badge" id="badge-ac">LVL 1 / 50</div>
+                    <div class="topic-info"><h3>🌊 6. AC Alternating Grid Basics</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
+                    <div class="lvl-badge" id="badge-ac">LVL 1 / 45</div>
                 </div>
                 <div class="topic-card" onclick="startModule('safety')">
-                    <div class="topic-info"><h3>🚨 7. Powerplant Safety Interlock</h3><small>Clear 50 Levels to unlock Certificate</small></div>
-                    <div class="lvl-badge" id="badge-safety">LVL 1 / 50</div>
+                    <div class="topic-info"><h3>🚨 7. Powerplant Safety Interlock</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
+                    <div class="lvl-badge" id="badge-safety">LVL 1 / 45</div>
                 </div>
             </div>
         </div>
@@ -235,8 +302,8 @@
         <div id="engine-card" class="card hidden">
             <div class="header-meta">
                 <span id="meta-topic" style="color: var(--neon-blue); font-weight: bold;">TOPIC</span>
-                <span id="meta-level" style="color: var(--neon-yellow); font-weight: bold;">LEVEL: 1 / 50</span>
-                <span id="meta-qcount" style="color: #fff;">Q: 1 / 10</span>
+                <span id="meta-level" style="color: var(--neon-yellow); font-weight: bold;">LEVEL: 1 / 45</span>
+                <span id="meta-qcount" style="color: #fff;">Q: 1 / 5</span>
             </div>
             <div class="timer-track"><div id="timer-fill-bar" class="timer-fill"></div></div>
             <h3 id="question-box" style="text-align: left; line-height: 1.6; min-height: 70px; margin-bottom: 25px;">Fetching grid variables...</h3>
@@ -250,7 +317,7 @@
         <!-- PHASE 4: REVELATION LEVEL MODAL -->
         <div id="level-over-card" class="card hidden">
             <h1 id="lvl-status-title">LEVEL EVALUATION</h1>
-            <p>Score metrics parsed: <span id="lvl-score-lbl" style="font-weight: bold; color: var(--neon-green);">0 / 10</span></p>
+            <p>Score metrics parsed: <span id="lvl-score-lbl" style="font-weight: bold; color: var(--neon-green);">0 / 5</span></p>
             <div class="star-rating" id="star-box"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
             <p id="lvl-feedback">Assessment evaluation concluded.</p>
             <div class="action-container">
@@ -270,7 +337,7 @@
                 <p style="font-size: 1.2rem; margin: 10px 0;">This engineering honor credential is strictly awarded to</p>
                 <h2 id="cert-user-name" style="font-family: 'Times New Roman', serif; font-size: 2.2rem; color: #1e3a8a; border-bottom: 2px solid #cbd5e1; display: inline-block; padding: 0 30px; margin: 10px 0;">ENGINEER</h2>
                 <p style="max-width: 600px; margin: 15px auto; font-size: 1.05rem; line-height: 1.5; color: #334155;">
-                    For successfully mastering all <b>50 operational levels</b> within the advanced node spectrum of 
+                    For successfully mastering all <b>45 operational levels</b> within the advanced node spectrum of 
                     <br><span id="cert-topic-name" style="color: #b45309; font-weight: bold; font-size: 1.2rem;">[TOPIC MATRIX]</span>. 
                     The candidate demonstrated absolute zero-error threshold logic tracking variables under timed loops.
                 </p>
@@ -291,7 +358,6 @@
         let userName = "";
         let currentTopic = "";
         
-        // 50 Levels structure per individual module tracking
         let topicProgress = { ohms: 1, kcl: 1, kvl: 1, series: 1, cap: 1, ac: 1, safety: 1 };
         let queryTracker = 1;
         let levelScore = 0;
@@ -305,14 +371,25 @@
             if(!val) { alert("Access Tag Required!"); return; }
             userName = val;
             document.getElementById("display-profile").innerText = userName.toUpperCase();
-            document.getElementById("login-card").classList.add("hidden");
-            document.getElementById("topic-card").classList.remove("hidden");
+            triggerScreenTransition("login-card", "topic-card");
             updateBadgesUI();
+        }
+
+        function triggerScreenTransition(hideId, showId) {
+            document.getElementById(hideId).classList.add("hidden");
+            document.getElementById(showId).classList.remove("hidden");
         }
 
         function updateBadgesUI() {
             Object.keys(topicProgress).forEach(key => {
-                document.getElementById(`badge-${key}`).innerText = `LVL ${topicProgress[key]} / 50`;
+                let currentLvl = topicProgress[key];
+                if(currentLvl > 45) {
+                    document.getElementById(`badge-${key}`).innerText = `COMPLETED 🎓`;
+                    document.getElementById(`badge-${key}`).style.borderColor = "var(--neon-green)";
+                    document.getElementById(`badge-${key}`).style.color = "var(--neon-green)";
+                } else {
+                    document.getElementById(`badge-${key}`).innerText = `LVL ${currentLvl} / 45`;
+                }
             });
         }
 
@@ -329,14 +406,12 @@
             queryTracker = 1;
             levelScore = 0;
 
-            // Check if user already finished all 50 levels
-            if(topicProgress[currentTopic] > 50) {
+            if(topicProgress[currentTopic] > 45) {
                 triggerCertificateGeneration();
                 return;
             }
 
-            document.getElementById("topic-card").classList.add("hidden");
-            document.getElementById("engine-card").classList.remove("hidden");
+            triggerScreenTransition("topic-card", "engine-card");
             buildDynamicQuestion();
         }
 
@@ -366,14 +441,13 @@
 
             let currentLvl = topicProgress[currentTopic];
             document.getElementById("meta-topic").innerText = currentTopic.toUpperCase() + " NETWORK GRID";
-            document.getElementById("meta-level").innerText = `LEVEL: ${currentLvl} / 50`;
-            document.getElementById("meta-qcount").innerText = `Q: ${queryTracker} / 10`;
+            document.getElementById("meta-level").innerText = `LEVEL: ${currentLvl} / 45`;
+            document.getElementById("meta-qcount").innerText = `Q: ${queryTracker} / 5`;
 
             let text = "";
             let selections = [];
             let ans = 0;
 
-            // Strict zero-repetition dynamic equation generation engine scaling up to Level 50
             let seedX = (currentLvl * 7) + (queryTracker * 3) + 5;
             let seedY = (currentLvl * 3) + queryTracker + 2;
 
@@ -416,6 +490,7 @@
                 b.innerText = opt;
                 b.classList.add("option-btn");
                 b.onclick = () => {
+                    if (document.getElementById("lock-btn").classList.contains("hidden")) return;
                     const all = document.querySelectorAll(".option-btn");
                     all.forEach(x => x.classList.remove("selected-option"));
                     selectedIndex = idx; b.classList.add("selected-option");
@@ -441,52 +516,56 @@
         }
 
         function advanceStep() {
-            if(queryTracker < 10) { queryTracker++; buildDynamicQuestion(); } 
-            else { evaluateLevelOutcome(); }
+            if(queryTracker < 5) { 
+                queryTracker++; 
+                buildDynamicQuestion();
+            } else { 
+                evaluateLevelOutcome(); 
+            }
         }
 
         function evaluateLevelOutcome() {
-            document.getElementById("engine-card").classList.add("hidden");
-            document.getElementById("level-over-card").classList.remove("hidden");
-            document.getElementById("lvl-score-lbl").innerText = `${levelScore} / 10`;
+            triggerScreenTransition("engine-card", "level-over-card");
+            document.getElementById("lvl-score-lbl").innerText = `${levelScore} / 5`;
             
             let starBox = document.getElementById("star-box");
             let stars = starBox.querySelectorAll(".star");
             stars.forEach(s => s.classList.remove("gold"));
 
-            if(levelScore >= 5) {
+            if(levelScore >= 3) { // 3 out of 5 required to pass
                 document.getElementById("lvl-status-title").innerText = "⚡ LEVEL PASSED!";
                 document.getElementById("lvl-status-title").style.color = "var(--neon-green)";
-                let awarded = levelScore === 10 ? 3 : (levelScore >= 8 ? 2 : 1);
-                for(let i = 0; i < awarded; i++) stars[i].classList.add("gold");
+                let awarded = levelScore === 5 ? 3 : (levelScore >= 4 ? 2 : 1);
+                
+                for(let i = 0; i < awarded; i++) {
+                    setTimeout(() => {
+                        stars[i].classList.add("gold");
+                    }, i * 200);
+                }
                 
                 document.getElementById("lvl-feedback").innerText = `Calibration verified. Module level checkpoint cleared successfully.`;
                 document.getElementById("retry-lvl-btn").classList.add("hidden");
                 document.getElementById("continue-lvl-btn").classList.remove("hidden");
                 
-                // Advance the current topic up to Level 50 max
-                if(topicProgress[currentTopic] < 50) {
+                if(topicProgress[currentTopic] < 45) {
                     topicProgress[currentTopic]++;
-                } else if(topicProgress[currentTopic] === 50) {
-                    // Level 50 Cleared! Flag it as completed!
-                    topicProgress[currentTopic] = 51; 
-                    document.getElementById("level-over-card").classList.add("hidden");
-                    triggerCertificateGeneration();
+                } else if(topicProgress[currentTopic] === 45) {
+                    topicProgress[currentTopic] = 46; // Mark as complete
+                    setTimeout(() => { triggerCertificateGeneration(); }, 1200); // Auto show certificate on clearing lvl 45
                 }
             } else {
                 document.getElementById("lvl-status-title").innerText = "💥 CRITICAL FAIL!";
                 document.getElementById("lvl-status-title").style.color = "var(--neon-pink)";
-                document.getElementById("lvl-feedback").innerText = `Score below 5 threshold. Safety Interlock triggered! You have been completely reset to Level 1 of this specific topic.`;
+                document.getElementById("lvl-feedback").innerText = `Score below 3 threshold. Safety Interlock triggered! You have been completely reset to Level 1 of this specific topic.`;
                 document.getElementById("retry-lvl-btn").classList.remove("hidden");
                 document.getElementById("continue-lvl-btn").classList.add("hidden");
             }
         }
 
         function resetToFirstLevel() {
-            topicProgress[currentTopic] = 1; // Direct penalty reset back to Level 1
+            topicProgress[currentTopic] = 1; 
             queryTracker = 1; levelScore = 0;
-            document.getElementById("level-over-card").classList.add("hidden");
-            document.getElementById("engine-card").classList.remove("hidden");
+            triggerScreenTransition("level-over-card", "engine-card");
             buildDynamicQuestion();
         }
 
@@ -496,7 +575,6 @@
             document.getElementById("topic-card").classList.add("hidden");
             document.getElementById("cert-screen").classList.remove("hidden");
 
-            // Populate printed data values onto layout dynamically
             document.getElementById("cert-user-name").innerText = userName.toUpperCase();
             
             let topicNames = {

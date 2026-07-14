@@ -3,397 +3,574 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Advanced Electrical Engineering Arcade Matrix</title>
-    
-    <!-- Link to external style sheet -->
-    <link rel="stylesheet" href="style.css">
+    <title>EEE Master Component Finder</title>
+    <style>
+        :root {
+            --bg-main: #0f0f0f; /* YouTube Dark Theme Baseline */
+            --bg-card: #212121;
+            --bg-hover: #383838;
+            --text-main: #ffffff; 
+            --accent-orange: #ff6b00; 
+            --border-line: #303030;
+            --border-silver-lite: #c0c0c0;
+
+            /* --- USER STYLED DIAGRAM PALETTE MATRIX CONFIG --- */
+            --diag-bg: #FFFFFF;           
+            --diag-emerald: #10B981;      
+            --diag-blue: #1D4ED8;         
+            --diag-text: #1F2937;         
+            --diag-card: #F9FAFB;   
+            --diag-border: #D1D5DB;       
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .header-container {
+            width: 100%;
+            max-width: 1000px;
+            text-align: center;
+            padding: 40px 20px 20px 20px;
+            box-sizing: border-box;
+        }
+
+        h1.main-title { 
+            font-size: 34px;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            color: var(--accent-orange);
+            text-transform: uppercase;
+        }
+        
+        .subtitle { 
+            color: var(--text-main);
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .search-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 620px;
+            margin: 0 auto;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 16px;
+            font-weight: 700;
+            background-color: #121212;
+            border: 1.5px solid var(--border-silver-lite);
+            border-radius: 40px;
+            outline: none;
+            color: var(--text-main);
+            box-sizing: border-box;
+        }
+
+        .search-box:focus {
+            border-color: var(--accent-orange);
+        }
+
+        .suggestions-panel {
+            position: absolute;
+            top: 105%;
+            left: 0;
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 12px;
+            z-index: 999;
+            max-height: 350px;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .suggestion-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .suggestion-item:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .suggestion-item .item-name {
+            font-weight: 700;
+        }
+
+        .suggestion-item .item-cat {
+            font-size: 11px;
+            font-weight: 800;
+            background: var(--accent-orange);
+            color: #ffffff;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .content-workspace {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 30px;
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+
+        .initial-state-view {
+            text-align: center;
+            padding: 80px 20px;
+            font-weight: 700;
+            border: 2px dashed var(--border-line);
+            border-radius: 16px;
+        }
+
+        .full-page-detail-view {
+            background: var(--bg-card);
+            border: 1px solid var(--border-line);
+            border-radius: 16px;
+            padding: 30px;
+            display: none;
+        }
+
+        .back-navigation-btn {
+            background: var(--bg-hover);
+            color: var(--text-main);
+            border: 1px solid var(--accent-orange);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .detail-header-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--accent-orange);
+            margin: 0 0 5px 0;
+        }
+
+        /* --- PURE WHITE DIAGRAM BOX BLOCK SCOPE --- */
+        .img-vector-block {
+            width: 100%;
+            background-color: var(--diag-bg) !important; /* Forces exact #FFFFFF Background */
+            border: 3px solid var(--diag-border) !important; /* #D1D5DB Custom Outer Boundary Trace */
+            border-radius: 14px;
+            padding: 35px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+            margin: 20px 0;
+        }
+
+        .img-vector-block svg {
+            background-color: var(--diag-bg);
+            overflow: visible;
+        }
+        
+        .img-vector-block svg text {
+            font-weight: 800;
+            font-size: 14px;
+            fill: var(--diag-text) !important; /* Strictly forces #1F2937 Text Colors */
+        }
+
+        .overview-box-text {
+            font-size: 16px;
+            font-weight: 700;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        table.matrix-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        table.matrix-table th, table.matrix-table td {
+            border: 1px solid var(--border-line);
+            padding: 14px;
+        }
+
+        table.matrix-table th {
+            background-color: #181818;
+            color: var(--accent-orange);
+            font-weight: 800;
+        }
+
+        table.matrix-table td {
+            font-weight: 700;
+        }
+
+        .sub-variants-card {
+            background: #181818;
+            border-left: 4px solid var(--accent-orange);
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 25px;
+        }
+        
+        .sub-variants-card h5 { margin: 0 0 5px 0; color: var(--accent-orange); }
+        .sub-variants-card p { margin: 0; font-weight: 700; }
+
+        .substitute-badge-container {
+            margin-top: 20px;
+            font-weight: 700;
+        }
+
+        .substitute-badge-container span.token {
+            color: #4ade80;
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: 800;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- PHASE 1: LOGIN -->
-        <div id="login-card" class="card">
-            <h1>⚡ ENGINEERING ARCADE</h1>
-            <p>Initialize master sequence terminal link (7 Topics • 45 Levels Each)</p>
-            <input type="text" id="username-field" placeholder="⚡ ENTER REPOSITORY ACCESS ENGINEER TAG">
-            <br>
-            <button onclick="loginUser()">LAUNCH CORE MATRIX ➡️</button>
+    <div class="header-container">
+        <h1 class="main-title">🔌 EEE Electrical & Electronics Components Finder</h1>
+        <div class="subtitle">Complete Hub: Passive, Semiconductors, ICs, Switch Gears, Power & Logic Matrices</div>
+        
+        <div class="search-wrapper">
+            <input type="text" id="searchInput" class="search-box" autocomplete="off" placeholder="Search (e.g., Resistor, 7486, MOSFET, Transformer, JK Flip-Flop)..." oninput="executeSearchEngine()">
+            <div id="suggestionsPanel" class="suggestions-panel"></div>
+        </div>
+    </div>
+
+    <div class="content-workspace">
+        <div id="initialStateView" class="initial-state-view">
+            Type component keyword inside search engine bar layout target grid map to trigger suggestion index mapping...
         </div>
 
-        <!-- PHASE 2: 7 TOPICS VIEW -->
-        <div id="topic-card" class="card hidden">
-            <h1>🎮 SELECT OPERATIONS NODE</h1>
-            <p>Engineer Profile: <span id="display-profile" style="color: var(--neon-pink); font-weight: bold;">...</span></p>
-            
-            <div class="topic-grid">
-                <div class="topic-card" onclick="startModule('ohms')">
-                    <div class="topic-info"><h3>💡 1. Ohm's Law Matrix Array</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
-                    <div class="lvl-badge" id="badge-ohms">LVL 1 / 45</div>
-                </div>
-                <div class="topic-card" onclick="startModule('kcl')">
-                    <div class="topic-info"><h3>🔀 2. Kirchhoff's Current Law Node</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
-                    <div class="lvl-badge" id="badge-kcl">LVL 1 / 45</div>
-                </div>
-                <div class="topic-card" onclick="startModule('kvl')">
-                    <div class="topic-info"><h3>🔄 3. Kirchhoff's Voltage Loop Mesh</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
-                    <div class="lvl-badge" id="badge-kvl">LVL 1 / 45</div>
-                </div>
-                <div class="topic-card" onclick="startModule('series')">
-                    <div class="topic-info"><h3>⛓️ 4. Series-Parallel Combinations</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
-                    <div class="lvl-badge" id="badge-series">LVL 1 / 45</div>
-                </div>
-                <div class="topic-card" onclick="startModule('cap')">
-                    <div class="topic-info"><h3>🔋 5. Capacitors & Inductors Field</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
-                    <div class="lvl-badge" id="badge-cap">LVL 1 / 45</div>
-                </div>
-                <div class="topic-card" onclick="startModule('ac')">
-                    <div class="topic-info"><h3>🌊 6. AC Alternating Grid Basics</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
-                    <div class="lvl-badge" id="badge-ac">LVL 1 / 45</div>
-                </div>
-                <div class="topic-card" onclick="startModule('safety')">
-                    <div class="topic-info"><h3>🚨 7. Powerplant Safety Interlock</h3><small>Clear 45 Levels to unlock Module Certificate</small></div>
-                    <div class="lvl-badge" id="badge-safety">LVL 1 / 45</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- PHASE 3: ACTIVE ARCADE ENGINE -->
-        <div id="engine-card" class="card hidden">
-            <div class="header-meta">
-                <span id="meta-topic" style="color: var(--neon-green); font-weight: bold;">TOPIC</span>
-                <span id="meta-level" style="color: #eab308; font-weight: bold;">LEVEL: 1 / 45</span>
-                <span id="meta-qcount" style="color: #fff;">Q: 1 / 5</span>
-            </div>
-            <div class="timer-track"><div id="timer-fill-bar" class="timer-fill"></div></div>
-            <h3 id="question-box" style="text-align: left; line-height: 1.6; min-height: 70px; margin-bottom: 25px;">Fetching grid variables...</h3>
-            <div id="options-box"></div>
-            <div class="action-container">
-                <button id="lock-btn" onclick="submitChoice()" style="width: 100%;">⚡ LOCK SYSTEM RESPONSE</button>
-                <button id="forward-btn" onclick="advanceStep()" class="hidden" style="width: 100%; background: linear-gradient(135deg, var(--neon-pink), #b91c1c); color: #fff;">NEXT MATRIX INDEX ➡️</button>
-            </div>
-        </div>
-
-        <!-- PHASE 4: REVELATION LEVEL MODAL -->
-        <div id="level-over-card" class="card hidden">
-            <h1 id="lvl-status-title">LEVEL EVALUATION</h1>
-            <p>Score metrics parsed: <span id="lvl-score-lbl" style="font-weight: bold; color: var(--neon-green);">0 / 5</span></p>
-            <div class="star-rating" id="star-box"><span class="star">★</span><span class="star">★</span><span class="star">★</span></div>
-            <p id="lvl-feedback">Assessment evaluation concluded.</p>
-            <div class="action-container">
-                <button id="retry-lvl-btn" onclick="resetToFirstLevel()" style="background: linear-gradient(135deg, #dc2626, #991b1b); color: #fff; width: 100%;">💥 FAIL: RESET LEVEL TO 1</button>
-                <button id="continue-lvl-btn" onclick="goToMenu()" style="width: 100%;">🎮 MAIN MODULE MENU</button>
-            </div>
-        </div>
-
-        <!-- PHASE 5: DYNAMIC CERTIFICATE GENERATION SCREEN -->
-        <div id="cert-screen" class="card hidden">
-            <div class="cert-container" id="printable-cert">
-                <div class="cert-header">
-                    <h2>Certificate of Excellence</h2>
-                    <p style="color:#64748b; font-size: 0.9rem; letter-spacing: 2px;">ELECTRICAL ARCADE COGNITIVE NODE</p>
-                </div>
-                <div class="cert-badge-gold">🏅</div>
-                <p style="font-size: 1.2rem; margin: 10px 0;">This engineering honor credential is strictly awarded to</p>
-                <h2 id="cert-user-name" style="font-family: 'Times New Roman', serif; font-size: 2.2rem; color: #1e3a8a; border-bottom: 2px solid #cbd5e1; display: inline-block; padding: 0 30px; margin: 10px 0;">ENGINEER</h2>
-                <p style="max-width: 600px; margin: 15px auto; font-size: 1.05rem; line-height: 1.5; color: #334155;">
-                    For successfully mastering all <b>45 operational levels</b> within the advanced node spectrum of 
-                    <br><span id="cert-topic-name" style="color: #b45309; font-weight: bold; font-size: 1.2rem;">[TOPIC MATRIX]</span>. 
-                    The candidate demonstrated absolute zero-error threshold logic tracking variables under timed loops.
-                </p>
-                <div style="margin-top: 35px; display: flex; justify-content: space-around; font-size: 0.85rem; color: #475569;">
-                    <div><p style="border-top: 1px dashed #475569; padding-top: 5px; width: 150px; margin:0 auto;">SYSTEM AUTOMATION</p></div>
-                    <div><p style="font-weight: bold; color:#0f172a;">DATE: <span id="cert-date">12-07-2026</span></p></div>
-                </div>
-            </div>
-            <br>
-            <div class="action-container">
-                <button onclick="window.print()" style="width: 50%; background:#059669; color:#fff;">🖨️ PRINT / SAVE AS PDF</button>
-                <button onclick="goToMenu()" style="width: 50%; background:#475569; color:#fff;">🎮 RETURN TO MENU</button>
-            </div>
+        <div id="fullPageDetailView" class="full-page-detail-view">
+            <button class="back-navigation-btn" onclick="returnToSearchHome()">⬅ Back to home grid</button>
+            <div id="injectionDetailsTarget"></div>
         </div>
     </div>
 
     <script>
-        let userName = "";
-        let currentTopic = "";
-        
-        let topicProgress = { ohms: 1, kcl: 1, kvl: 1, series: 1, cap: 1, ac: 1, safety: 1 };
-        let queryTracker = 1;
-        let levelScore = 0;
-        let activeQ = {};
-        let ticker = null;
-        let timeRemaining = 60;
-        let selectedIndex = null;
+        // STRICT SCHEMATIC CONFIGURATION MAP USING USER'S PRECISE COLOR EMBED PIPELINES
+        const componentDatabase = [
+            {
+                name: "Resistor",
+                category: "Passive Components",
+                desc: "Limits or regulates the flow of electrical current in an electronic circuit.",
+                image: `<svg width="250" height="60">
+                            <!-- Royal Blue Leads -->
+                            <line x1="10" y1="30" x2="60" y2="30" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <!-- Card Base Grid with Border Stroke Line -->
+                            <rect x="60" y="15" width="130" height="30" rx="5" fill="var(--diag-card)" stroke="var(--diag-border)" stroke-width="3"/>
+                            <!-- Color Bands via Emerald & Royal Blue Alternate Tracks -->
+                            <line x1="85" y1="15" x2="85" y2="45" stroke="var(--diag-emerald)" stroke-width="6"/>
+                            <line x1="115" y1="15" x2="115" y2="45" stroke="var(--diag-blue)" stroke-width="6"/>
+                            <line x1="145" y1="15" x2="145" y2="45" stroke="var(--diag-emerald)" stroke-width="6"/>
+                            <line x1="190" y1="30" x2="240" y2="30" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                        </svg>`,
+                pins: { "Terminal 1": "Input / Node A (No polarity)", "Terminal 2": "Output / Node B (No polarity)" },
+                details: "Color band structures indicate precise ohmic resistance values based on multiplier bounds.",
+                alts: ["Carbon Film", "Metal Film", "Wirewound"]
+            },
+            {
+                name: "Variable Resistor / Potentiometer",
+                category: "Passive Components",
+                desc: "Three-terminal resistor with a sliding or rotating contact that forms an adjustable voltage divider.",
+                image: `<svg width="200" height="100">
+                            <rect x="50" y="30" width="100" height="30" fill="var(--diag-card)" stroke="var(--diag-border)" stroke-width="3"/>
+                            <line x1="10" y1="45" x2="50" y2="45" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="150" y1="45" x2="190" y2="45" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="100" y1="90" x2="100" y2="60" stroke="var(--diag-emerald)" stroke-width="3.5"/>
+                            <polygon points="100,60 90,75 110,75" fill="var(--diag-emerald)"/>
+                        </svg>`,
+                pins: { "Pin 1 (Fixed)": "End Terminal A", "Pin 2 (Wiper)": "Variable Adjustable Node Output", "Pin 3 (Fixed)": "End Terminal B" },
+                details: "Includes options like Rheostat, Thermistor, Varistor, and LDR light sensing variations.",
+                alts: ["Preset", "Trimpot", "Rheostat"]
+            },
+            {
+                name: "Capacitor",
+                category: "Passive Components",
+                desc: "Stores electrical energy in an electric field via polarized electrolytic grids or ceramic plates.",
+                image: `<svg width="200" height="80">
+                            <line x1="20" y1="40" x2="90" y2="40" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="110" y1="40" x2="180" y2="40" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="90" y1="15" x2="90" y2="65" stroke="var(--diag-emerald)" stroke-width="6"/>
+                            <line x1="110" y1="15" x2="110" y2="65" stroke="var(--diag-emerald)" stroke-width="6"/>
+                            <text x="72" y="12" fill="var(--diag-text)">+</text>
+                            <text x="116" y="12" fill="var(--diag-text)">-</text>
+                        </svg>`,
+                pins: { "Long Lead": "Anode (Positive + for Electrolytic configurations)", "Short Lead": "Cathode (Negative - variant)" },
+                details: "Includes Ceramic, Electrolytic, Tantalum, and Super Capacitor modules.",
+                alts: ["Ceramic Disc", "Electrolytic Cap", "Tantalum"]
+            },
+            {
+                name: "Transformer",
+                category: "Passive Components",
+                desc: "Static electrical device that transfers electrical energy between circuits through electromagnetic induction.",
+                image: `<svg width="220" height="90">
+                            <rect x="90" y="5" width="40" height="80" fill="var(--diag-card)" stroke="var(--diag-border)" stroke-width="3" rx="4"/>
+                            <path d="M20,15 C45,-5 45,95 20,75 M20,30 C45,10 45,110 20,90" fill="none" stroke="var(--diag-emerald)" stroke-width="4.5"/>
+                            <path d="M200,15 C175,-5 175,95 200,75 M200,30 C175,10 175,110 200,90" fill="none" stroke="var(--diag-blue)" stroke-width="4.5"/>
+                            <line x1="5" y1="45" x2="28" y2="45" stroke="var(--diag-emerald)" stroke-width="3.5"/>
+                            <line x1="192" y1="45" x2="215" y2="45" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                        </svg>`,
+                pins: { "Primary Coil": "Input High/Low Alternating AC voltage grid", "Secondary Coil": "Induced Output AC stepped voltage parameters" },
+                details: "Covers Autotransformer, Current Transformer (CT), and Potential Transformer (PT) units.",
+                alts: ["Step-Down XFMR", "Step-Up XFMR", "Isolation XFMR"]
+            },
+            {
+                name: "PN Diode / Rectifier Diode",
+                category: "Semiconductors",
+                desc: "Allows current flow in a single vector forward path while executing reverse voltage isolation blocking.",
+                image: `<svg width="200" height="70">
+                            <line x1="10" y1="35" x2="70" y2="35" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <polygon points="70,10 130,35 70,60" fill="var(--diag-emerald)" stroke="var(--diag-border)" stroke-width="2"/>
+                            <line x1="130" y1="10" x2="130" y2="60" stroke="var(--diag-blue)" stroke-width="6"/>
+                            <line x1="130" y1="35" x2="190" y2="35" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                        </svg>`,
+                pins: { "Anode (Base Triangle)": "Positive terminal configuration link", "Cathode (Line side)": "Negative terminal reference loop" },
+                details: "Covers Zener Diode, Schottky Diode, LED emitters, Photodiodes, and unified Bridge Rectifiers.",
+                alts: ["1N4007", "1N4148", "1N5408"]
+            },
+            {
+                name: "MOSFET",
+                category: "Semiconductors",
+                desc: "Metal-Oxide-Semiconductor Field-Effect Transistor optimized for high frequency load switching systems.",
+                image: `<svg width="180" height="100">
+                            <line x1="40" y1="20" x2="40" y2="80" stroke="var(--diag-blue)" stroke-width="4.5"/>
+                            <line x1="55" y1="25" x2="55" y2="45" stroke="var(--diag-emerald)" stroke-width="4.5"/>
+                            <line x1="55" y1="50" x2="55" y2="75" stroke="var(--diag-emerald)" stroke-width="4.5"/>
+                            <line x1="10" y1="50" x2="40" y2="50" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="55" y1="30" x2="110" y2="30" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="55" y1="70" x2="110" y2="70" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <text x="5" y="42" fill="var(--diag-text)">G</text>
+                            <text x="115" y="35" fill="var(--diag-text)">D</text>
+                            <text x="115" y="75" fill="var(--diag-text)">S</text>
+                        </svg>`,
+                pins: { "Gate (G)": "Voltage control dynamic switch pin trigger", "Drain (D)": "High load current inflow terminal node", "Source (S)": "Current path exit ground channel terminal" },
+                details: "Pairs with related components like BJT NPN/PNP configurations, JFETs, IGBT structures, and SCR/TRIAC power control switches.",
+                alts: ["IRF540N", "IRFZ44N", "2N7000"]
+            },
+            {
+                name: "IC 741 / Operational Amplifier",
+                category: "ICs & Operational Amplifiers",
+                desc: "High gain operational amplifier framework optimized for differential analog processing.",
+                image: `<svg width="160" height="110">
+                            <rect x="35" y="15" width="90" height="80" fill="var(--diag-card)" stroke="var(--diag-border)" stroke-width="3" rx="8"/>
+                            <circle cx="50" cy="27" r="5" fill="var(--diag-emerald)"/>
+                            <line x1="10" y1="40" x2="35" y2="40" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="10" y1="70" x2="35" y2="70" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="125" y1="40" x2="150" y2="40" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="125" y1="70" x2="150" y2="70" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <text x="42" y="45" fill="var(--diag-text)" font-size="10">2</text>
+                            <text x="42" y="75" fill="var(--diag-text)" font-size="10">3</text>
+                            <text x="110" y="45" fill="var(--diag-text)" font-size="10">6</text>
+                            <text x="110" y="75" fill="var(--diag-text)" font-size="10">7</text>
+                        </svg>`,
+                pins: { "Pin 2": "Inverting Input (-)", "Pin 3": "Non-Inverting Input (+)", "Pin 6": "Amplified Output Terminal Node", "Pin 7": "VCC+ Positive Supply Rail", "Pin 4": "VEE- Negative Supply Rail" },
+                details: "Includes 555 timers, 723 reference controllers, LM317 dynamic rails, 7805/7812 switches, ADCs, DACs, and Microprocessors.",
+                alts: ["uA741", "LM741CN", "CA3140"]
+            },
+            {
+                name: "IC 7486 / XOR Logic Gate",
+                category: "Logic Gates & Logic ICs",
+                desc: "Quadruple 2-Input Exclusive-OR (XOR) logic gate module arrays processing automated binary matrices.",
+                image: `<svg width="220" height="90">
+                            <path d="M30,20 Q60,45 30,70 Q70,70 100,45 Q70,20 30,20" fill="var(--diag-card)" stroke="var(--diag-border)" stroke-width="3"/>
+                            <path d="M18,20 Q48,45 18,70" fill="none" stroke="var(--diag-emerald)" stroke-width="3.5"/>
+                            <line x1="100" y1="45" x2="160" y2="45" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="2" y1="35" x2="40" y2="35" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="2" y1="55" x2="40" y2="55" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <text x="165" y="50" fill="var(--diag-text)">Y</text>
+                            <text x="5" y="28" fill="var(--diag-text)">A</text>
+                            <text x="5" y="73" fill="var(--diag-text)">B</text>
+                        </svg>`,
+                pins: { "Pin 1": "Input 1A (Gate 1)", "Pin 2": "Input 1B (Gate 1)", "Pin 3": "Output 1Y (Gate 1)", "Pin 7": "GND Reference Ground Node", "Pin 14": "VCC System Power Input (+5V)" },
+                details: "Interfaces with logic elements like AND (7408), OR (7432), NOT (7404), NAND (7400), NOR (7402), and XNOR (74266/4077).",
+                alts: ["74LS86", "74HC86", "SN74LS86A"]
+            },
+            {
+                name: "Relay Module & Control Switch",
+                category: "Switches & Controls",
+                desc: "Electromagnetic array configurations enabling small logic values to safely switch large industrial currents.",
+                image: `<svg width="220" height="90">
+                            <rect x="20" y="25" width="60" height="45" fill="var(--diag-card)" stroke="var(--diag-border)" stroke-width="3"/>
+                            <path d="M20,25 L80,70 M20,70 L80,25" stroke="var(--diag-emerald)" stroke-width="2.5"/>
+                            <line x1="120" y1="48" x2="175" y2="20" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <circle cx="120" cy="48" r="5" fill="var(--diag-blue)"/>
+                            <circle cx="175" cy="20" r="5" fill="var(--diag-emerald)"/>
+                            <circle cx="175" cy="65" r="5" fill="var(--diag-border)"/>
+                            <text x="90" y="53" fill="var(--diag-text)">COM</text>
+                            <text x="185" y="25" fill="var(--diag-text)">NO</text>
+                            <text x="185" y="70" fill="var(--diag-text)">NC</text>
+                        </svg>`,
+                pins: { "Coil Pins (2 Nos)": "Electromagnetic excitation supply nodes", "COM Terminal": "Common central distribution path rail", "NO / NC Contacts": "Normally Open / Normally Closed operational lines" },
+                details: "Maps to SPST, SPDT, DPDT toggles, push button arrays, proximity limit units, and custom magnetic reed nodes.",
+                alts: ["5V Relay Module", "12V Sugar Cube Relay"]
+            },
+            {
+                name: "JK Flip-Flop Circuit",
+                category: "Digital Circuits & Memory",
+                desc: "Sequential logic configuration circuit executing tracking storage arrays via automated synchronous registers.",
+                image: `<svg width="180" height="130">
+                            <rect x="40" y="10" width="100" height="110" fill="var(--diag-card)" stroke="var(--diag-border)" stroke-width="3.5" rx="4"/>
+                            <text x="50" y="38" fill="var(--diag-text)">J</text>
+                            <text x="50" y="102" fill="var(--diag-text)">K</text>
+                            <text x="112" y="38" fill="var(--diag-emerald)">Q</text>
+                            <text x="112" y="102" fill="var(--diag-blue)">Q'</text>
+                            <line x1="5" y1="32" x2="40" y2="32" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="5" y1="96" x2="40" y2="96" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="140" y1="32" x2="175" y2="32" stroke="var(--diag-emerald)" stroke-width="3.5"/>
+                            <line x1="140" y1="96" x2="175" y2="96" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <polygon points="40,55 52,64 40,73" fill="none" stroke="var(--diag-text)" stroke-width="2"/>
+                            <line x1="5" y1="64" x2="40" y2="64" stroke="var(--diag-text)" stroke-width="2"/>
+                        </svg>`,
+                pins: { "J Input": "Synchronous Set sequence baseline", "K Input": "Synchronous Reset sequence data channel", "CLK Node": "Clock edge trigger pulse channel terminal", "Q / Q' Outputs": "Complementary binary data status registers" },
+                details: "Integrates with SR/D/T flip-flops, multiplexers (MUX/DEMUX), hardware encoders, counters, and EEPROM flash memories.",
+                alts: ["IC 7476", "IC 74112"]
+            },
+            {
+                name: "MCB / Circuit Breaker",
+                category: "Power Systems & Protection",
+                desc: "Miniature Circuit Breaker. Automatically interrupts dangerous overcurrent or short circuit thermal faults.",
+                image: `<svg width="110" height="130">
+                            <rect x="25" y="10" width="60" height="110" fill="var(--diag-card)" stroke="var(--diag-border)" stroke-width="3" rx="4"/>
+                            <rect x="42" y="45" width="26" height="40" fill="var(--diag-emerald)" rx="4"/>
+                            <line x1="55" y1="10" x2="55" y2="0" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <line x1="55" y1="120" x2="55" y2="130" stroke="var(--diag-blue)" stroke-width="3.5"/>
+                            <text x="47" y="70" fill="var(--diag-text)" font-size="11">OFF</text>
+                        </svg>`,
+                pins: { "Line In (Top)": "Main high-current phase terminal supply feed", "Load Out (Bottom)": "Protected power loop distribution channel output" },
+                details: "Expanded to support industrial scale systems like MCCB, tracking RCCB/ELCB leak safeguards, and unified heavy power SMPS/UPS networks.",
+                alts: ["Single Pole MCB", "Double Pole MCB"]
+            },
+            {
+                name: "3-Phase Induction Motor",
+                category: "Electrical Machines & Instrumentation",
+                desc: "AC electromechanical machine converting multi-phase rotating alternating magnetic fields into heavy mechanical shaft torque.",
+                image: `<svg width="180" height="130">
+                            <circle cx="85" cy="65" r="48" fill="var(--diag-card)" stroke="var(--diag-border)" stroke-width="3.5"/>
+                            <circle cx="85" cy="65" r="16" fill="var(--diag-bg)" stroke="var(--diag-blue)" stroke-width="3"/>
+                            <line x1="85" y1="65" x2="135" y2="30" stroke="var(--diag-emerald)" stroke-width="6"/>
+                            <rect x="55" y="5" width="60" height="15" fill="var(--diag-blue)" rx="3"/>
+                            <text x="65" y="16" fill="#ffffff" font-size="9">PANEL</text>
+                        </svg>`,
+                pins: { "U1 / V1 / W1": "Primary phases input line injection connections", "U2 / V2 / W2": "Secondary phases shorting terminal loop arrays (Star/Delta linkages)" },
+                details: "Pairs with measuring components like Ammeters, Voltmeters, dynamic Wattmeters, digital energy meters, and industrial busbar modules.",
+                alts: ["Squirrel Cage Motor", "Slip Ring Motor"]
+            }
+        ];
 
-        function loginUser() {
-            let val = document.getElementById("username-field").value.trim();
-            if(!val) { alert("Access Tag Required!"); return; }
-            userName = val;
-            document.getElementById("display-profile").innerText = userName.toUpperCase();
-            triggerScreenTransition("login-card", "topic-card");
-            updateBadgesUI();
-        }
+        function executeSearchEngine() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const panel = document.getElementById('suggestionsPanel');
 
-        function triggerScreenTransition(hideId, showId) {
-            document.getElementById(hideId).classList.add("hidden");
-            document.getElementById(showId).classList.remove("hidden");
-        }
-
-        function updateBadgesUI() {
-            Object.keys(topicProgress).forEach(key => {
-                let currentLvl = topicProgress[key];
-                if(currentLvl > 45) {
-                    document.getElementById(`badge-${key}`).innerText = `COMPLETED 🎓`;
-                    document.getElementById(`badge-${key}`).style.borderColor = "var(--neon-green)";
-                    document.getElementById(`badge-${key}`).style.color = "var(--neon-green)";
-                } else {
-                    document.getElementById(`badge-${key}`).innerText = `LVL ${currentLvl} / 45`;
-                }
-            });
-        }
-
-        function goToMenu() {
-            document.getElementById("level-over-card").classList.add("hidden");
-            document.getElementById("engine-card").classList.add("hidden");
-            document.getElementById("cert-screen").classList.add("hidden");
-            document.getElementById("topic-card").classList.remove("hidden");
-            updateBadgesUI();
-        }
-
-        function startModule(topic) {
-            currentTopic = topic;
-            queryTracker = 1;
-            levelScore = 0;
-
-            if(topicProgress[currentTopic] > 45) {
-                triggerCertificateGeneration();
+            if (query.length === 0) {
+                panel.style.display = 'none';
                 return;
             }
 
-            triggerScreenTransition("topic-card", "engine-card");
-            buildDynamicQuestion();
-        }
+            const matched = componentDatabase.filter(item => 
+                item.name.toLowerCase().replace(/\s+/g, '').includes(query.replace(/\s+/g, '')) || 
+                item.category.toLowerCase().includes(query)
+            );
 
-        function runClock() {
-            clearInterval(ticker);
-            timeRemaining = 60;
-            document.getElementById("timer-fill-bar").style.width = "100%";
-            ticker = setInterval(() => {
-                timeRemaining--;
-                document.getElementById("timer-fill-bar").style.width = (timeRemaining / 60 * 100) + "%";
-                if(timeRemaining <= 0) { clearInterval(ticker); forceTimeout(); }
-            }, 1000);
-        }
-
-        function forceTimeout() {
-            document.getElementById("lock-btn").classList.add("hidden");
-            const opts = document.querySelectorAll(".option-btn");
-            opts.forEach(o => o.disabled = true);
-            opts[activeQ.answerIdx].classList.add("correct");
-            document.getElementById("forward-btn").classList.remove("hidden");
-        }
-
-        function buildDynamicQuestion() {
-            document.getElementById("forward-btn").classList.add("hidden");
-            document.getElementById("lock-btn").classList.remove("hidden");
-            selectedIndex = null;
-
-            let currentLvl = topicProgress[currentTopic];
-            document.getElementById("meta-topic").innerText = currentTopic.toUpperCase() + " NETWORK GRID";
-            document.getElementById("meta-level").innerText = `LEVEL: ${currentLvl} / 45`;
-            document.getElementById("meta-qcount").innerText = `Q: ${queryTracker} / 5`;
-
-            let text = "";
-            let selections = [];
-            let ans = 0;
-
-            // Generate totally randomized base values per question index to guarantee uniqueness
-            let multiplier = Math.floor(Math.random() * 5) + 2; 
-            let seedX = (currentLvl * 3) + (queryTracker * multiplier) + 4;
-            let seedY = (currentLvl * 2) + queryTracker + 3;
-
-            // Question text templates pool mapped to queryTracker to force physical string variation!
-            if (currentTopic === 'ohms') {
-                let v = seedX * seedY;
-                if(queryTracker % 2 === 0) {
-                    text = `[Ohm's Law Q-${queryTracker}] A diagnostic test benchmarks an electric sub-panel routing a current of exactly ${seedX} Amps into a dynamic load terminal resistance calibrated at ${seedY} Ohms. Find the total electromotive drop.`;
-                } else {
-                    text = `[Ohm's Law Q-${queryTracker}] A primary transmission line delivers power with a constant measured current of ${seedX} A across a shunt resistance unit rated at ${seedY} Ohms. Calculate the localized voltage drop.`;
-                }
-                selections = [`${v} Volts`, `${v + 12} Volts`, `${v - 7} Volts`]; ans = 0;
-            } 
-            else if (currentTopic === 'kcl') {
-                let sum = seedX + seedY;
-                if(queryTracker % 2 === 0) {
-                    text = `[Kirchhoff Current Q-${queryTracker}] At a complex hardware node terminal, convergent input current lines register flow parameters of ${seedX}A and ${seedY}A respectively. Resolve the aggregate exiting line current.`;
-                } else {
-                    text = `[Kirchhoff Current Q-${queryTracker}] Two branches of an electrical bus grid channel structural current fields of ${seedX} Amps and ${seedY} Amps into a shared grounding node junction. Determine the combined system output.`;
-                }
-                selections = [`${Math.abs(seedX-seedY)} A`, `${sum} Amps`, `${sum + 15} A`]; ans = 1;
-            } 
-            else if (currentTopic === 'kvl') {
-                let v_source = seedX * 6; let drop = seedX * 2; let remainder = v_source - drop;
-                if(queryTracker % 2 === 0) {
-                    text = `[Kirchhoff Voltage Q-${queryTracker}] A closed distribution loop contains a standard supply rail dispensing ${v_source}V. If the main transformer reports a drop of ${drop}V, find the remaining voltage across the series load.`;
-                } else {
-                    text = `[Kirchhoff Voltage Q-${queryTracker}] Inside an experimental loop circuit, the generation component feeds ${v_source} Volts. An isolation switch causes a localized potential drop of ${drop} Volts. Calculate the terminal loop voltage.`;
-                }
-                selections = [`${remainder + 9} V`, `0 V`, `${remainder} Volts`]; ans = 2;
-            } 
-            else if (currentTopic === 'series') {
-                let r_eq = seedX + seedY;
-                if(queryTracker % 2 === 0) {
-                    text = `[Topology Array Q-${queryTracker}] A circuit grid links two inline linear microprocessors in series, possessing electrical resistance qualities of ${seedX} Ohms and ${seedY} Ohms. Calculate the total combined system impedance.`;
-                } else {
-                    text = `[Topology Array Q-${queryTracker}] An electrical control panel deploys a series network configuration using two heating elements measured at ${seedX} Ω and ${seedY} Ω. Determine the master equivalent resistance parameter.`;
-                }
-                selections = [`${r_eq} Ohms`, `${r_eq + 25} Ohms`, `${Math.floor(r_eq/3)} Ohms`]; ans = 0;
-            } 
-            else if (currentTopic === 'cap') {
-                let totalC = seedX + seedY;
-                if(queryTracker % 2 === 0) {
-                    text = `[Reactive Field Q-${queryTracker}] A set of dual safety backup capacitors are attached in a parallel topology stack within a motherboard, reading ${seedX} uF and ${seedY} uF. Find the absolute aggregate capacitance.`;
-                } else {
-                    text = `[Reactive Field Q-${queryTracker}] A signal conditioning system bridges two smooth electrolytic capacitors in parallel array lanes with capacities of ${seedX} microFarads and ${seedY} microFarads. Determine the cumulative capacitance.`;
-                }
-                selections = [`${Math.abs(seedX-seedY)} uF`, `${totalC} uF`, `${totalC * 2} uF`]; ans = 1;
-            } 
-            else if (currentTopic === 'ac') {
-                let freq = 50 + currentLvl + queryTracker;
-                if(queryTracker % 2 === 0) {
-                    text = `[AC Grid Q-${queryTracker}] A heavy alternating power rotor generates a stable system sine wave frequency calibrated to exactly ${freq} Hz. Extract the corresponding Angular Frequency matrix component ($w = 2\\pi f$).`;
-                } else {
-                    text = `[AC Grid Q-${queryTracker}] An absolute standard backup alternator feeds the power grid at a checked mechanical cycling frequency of ${freq} Hz. Calculate the active radian angular speed vector.`;
-                }
-                selections = [`${(2 * 3.1416 * freq).toFixed(2)} rad/sec`, `${freq} rad/s`, `314.16 rad/s`]; ans = 0;
-            } 
-            else {
-                if(queryTracker === 1) {
-                    text = `[Safety Protocol Q-1] During routine plant maintenance checks, a sudden thermal overloading is reported along the primary bus. What is the emergency reaction sequence?`;
-                    selections = ["Manually throttle branch variables", "Execute emergency bus isolation tie-breakers instantly", "Log event parameters without shutdown"]; ans = 1;
-                } else if(queryTracker === 2) {
-                    text = `[Safety Protocol Q-2] An insulation degradation fault is logged on high tension grid line ${seedX}. What dynamic safety interlock element activates immediately?`;
-                    selections = ["Increase step-up transformer output", "Deploy immediate Residual Current Ground Fault Breakers", "Toggle shunt reactor to manual mode"]; ans = 1;
-                } else if(queryTracker === 3) {
-                    text = `[Safety Protocol Q-3] High arc-flash hazards are discovered near sub-station console ${seedY}. Which procedure guarantees absolute safety for engineering staff?`;
-                    selections = ["Perform hot-line maintenance with iron bars", "Enforce full Lockout-Tagout (LOTO) and verify zero energy states", "Deploy handheld cooling fans"]; ans = 1;
-                } else if(queryTracker === 4) {
-                    text = `[Safety Protocol Q-4] A lightning strike hits lightning rod terminal ${seedX}. How does the safety matrix divert the lightning energy surge safely?`;
-                    selections = ["By routing through low-impedance ground earth mats", "By storing it in the capacitor bank array", "By isolating the main generator panel fully"]; ans = 0;
-                } else {
-                    text = `[Safety Protocol Q-5] If the automatic cooling pumps on emergency substation transformer ${seedY} fail, what automated backup sequence initiates?`;
-                    selections = ["Increase load variables on the transformer", "Trigger interlock load-shedding switches and sound audible klaxons", "Disable all system sensors"]; ans = 1;
-                }
+            if (matched.length === 0) {
+                panel.innerHTML = `<div class="suggestion-item" style="color:var(--text-main); font-style:italic;">No active results found...</div>`;
+                panel.style.display = 'block';
+                return;
             }
 
-            activeQ = { question: text, options: selections, answerIdx: ans };
-            document.getElementById("question-box").innerText = text;
-            
-            let block = document.getElementById("options-box");
-            block.innerHTML = "";
-            selections.forEach((opt, idx) => {
-                let b = document.createElement("button");
-                b.innerText = opt;
-                b.classList.add("option-btn");
-                b.onclick = () => {
-                    if (document.getElementById("lock-btn").classList.contains("hidden")) return;
-                    const all = document.querySelectorAll(".option-btn");
-                    all.forEach(x => x.classList.remove("selected-option"));
-                    selectedIndex = idx; b.classList.add("selected-option");
-                };
-                block.appendChild(b);
+            panel.innerHTML = '';
+            matched.forEach(item => {
+                const row = document.createElement('div');
+                row.className = 'suggestion-item';
+                row.innerHTML = `
+                    <span class="item-name">${item.name}</span>
+                    <span class="item-cat">${item.category.split(' ')[0]}</span>
+                `;
+                row.onclick = () => routingToNextPage(item);
+                panel.appendChild(row);
             });
-            runClock();
+
+            panel.style.display = 'block';
         }
 
-        function submitChoice() {
-            if(selectedIndex === null) { alert("Select a terminal system option line first!"); return; }
-            clearInterval(ticker);
-            document.getElementById("lock-btn").classList.add("hidden");
-            const elements = document.querySelectorAll(".option-btn");
-            elements.forEach(e => { e.disabled = true; e.classList.remove("selected-option"); });
-
-            if(selectedIndex === activeQ.answerIdx) {
-                elements[selectedIndex].classList.add("correct"); levelScore++;
-            } else {
-                elements[selectedIndex].classList.add("wrong"); elements[activeQ.answerIdx].classList.add("correct");
+        document.addEventListener('click', function(e) {
+            if (e.target.id !== 'searchInput') {
+                document.getElementById('suggestionsPanel').style.display = 'none';
             }
-            document.getElementById("forward-btn").classList.remove("hidden");
-        }
+        });
 
-        function advanceStep() {
-            if(queryTracker < 5) { 
-                queryTracker++; 
-                buildDynamicQuestion();
-            } else { 
-                evaluateLevelOutcome(); 
-            }
-        }
-
-        function evaluateLevelOutcome() {
-            triggerScreenTransition("engine-card", "level-over-card");
-            document.getElementById("lvl-score-lbl").innerText = `${levelScore} / 5`;
+        function routingToNextPage(item) {
+            document.getElementById('suggestionsPanel').style.display = 'none';
             
-            let starBox = document.getElementById("star-box");
-            let stars = starBox.querySelectorAll(".star");
-            stars.forEach(s => s.classList.remove("gold"));
+            const initialView = document.getElementById('initialStateView');
+            const pageView = document.getElementById('fullPageDetailView');
+            const injectionPoint = document.getElementById('injectionDetailsTarget');
 
-            if(levelScore >= 3) {
-                document.getElementById("lvl-status-title").innerText = "⚡ LEVEL PASSED!";
-                document.getElementById("lvl-status-title").style.color = "var(--neon-green)";
-                let awarded = levelScore === 5 ? 3 : (levelScore >= 4 ? 2 : 1);
-                
-                for(let i = 0; i < awarded; i++) {
-                    setTimeout(() => {
-                        stars[i].classList.add("gold");
-                    }, i * 200);
-                }
-                
-                document.getElementById("lvl-feedback").innerText = `Calibration verified. Module level checkpoint cleared successfully.`;
-                document.getElementById("retry-lvl-btn").classList.add("hidden");
-                document.getElementById("continue-lvl-btn").classList.remove("hidden");
-                
-                if(topicProgress[currentTopic] < 45) {
-                    topicProgress[currentTopic]++;
-                } else if(topicProgress[currentTopic] === 45) {
-                    topicProgress[currentTopic] = 46; 
-                    setTimeout(() => { triggerCertificateGeneration(); }, 1200);
-                }
-            } else {
-                document.getElementById("lvl-status-title").innerText = "💥 CRITICAL FAIL!";
-                document.getElementById("lvl-status-title").style.color = "var(--neon-pink)";
-                document.getElementById("lvl-feedback").innerText = `Score below 3 threshold. Safety Interlock triggered! You have been completely reset to Level 1 of this specific topic.`;
-                document.getElementById("retry-lvl-btn").classList.remove("hidden");
-                document.getElementById("continue-lvl-btn").classList.add("hidden");
+            let pinRows = '';
+            for (let [pin, desc] of Object.entries(item.pins)) {
+                pinRows += `<tr><td>${pin}</td><td>${desc}</td></tr>`;
             }
+
+            injectionPoint.innerHTML = `
+                <h2 class="detail-header-title">${item.name}</h2>
+                <div class="detail-meta-tag">Domain Category Matrix: ${item.category}</div>
+                
+                <h4 style="margin: 20px 0 5px 0; color: var(--accent-orange);">⚡ Component Vector Symbol Schematic:</h4>
+                <div class="img-vector-block">
+                    ${item.image}
+                </div>
+
+                <p class="overview-box-text">Technical Functional Overview: ${item.desc}</p>
+                
+                <h3 style="margin-top:25px; font-weight:800; text-transform:uppercase; font-size:16px; color: var(--accent-orange);">📍 Pin Configuration Grid Array</h3>
+                <table class="matrix-table">
+                    <thead>
+                        <tr>
+                            <th>Terminal Pin Node</th>
+                            <th>Functional Description Reference Parameter</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${pinRows}
+                    </tbody>
+                </table>
+                
+                <div class="sub-variants-card">
+                    <h5>⚙️ Core Extensions & Sub-Class Parameters</h5>
+                    <p>${item.details}</p>
+                </div>
+
+                <div class="substitute-badge-container">
+                    🔄 Industry Standard Equivalents: <span class="token">${item.alts.join(', ')}</span>
+                </div>
+            `;
+
+            initialView.style.display = 'none';
+            pageView.style.display = 'block';
         }
 
-        function resetToFirstLevel() {
-            topicProgress[currentTopic] = 1; 
-            queryTracker = 1; levelScore = 0;
-            triggerScreenTransition("level-over-card", "engine-card");
-            buildDynamicQuestion();
-        }
-
-        function triggerCertificateGeneration() {
-            document.getElementById("engine-card").classList.add("hidden");
-            document.getElementById("level-over-card").classList.add("hidden");
-            document.getElementById("topic-card").classList.add("hidden");
-            document.getElementById("cert-screen").classList.remove("hidden");
-
-            document.getElementById("cert-user-name").innerText = userName.toUpperCase();
-            
-            let topicNames = {
-                ohms: "Ohm's Law Matrix Array",
-                kcl: "Kirchhoff's Current Law Node Mesh",
-                kvl: "Kirchhoff's Voltage Loop Spectrum",
-                series: "Series-Parallel Topology Networks",
-                cap: "Capacitors & Inductors Field Dynamics",
-                ac: "AC Alternating Grid Vector Basics",
-                safety: "Powerplant Safety Interlock Protocols"
-            };
-            document.getElementById("cert-topic-name").innerText = topicNames[currentTopic].toUpperCase();
-            document.getElementById("cert-date").innerText = new Date().toLocaleDateString('en-GB');
+        function returnToSearchHome() {
+            document.getElementById('fullPageDetailView').style.display = 'none';
+            document.getElementById('initialStateView').style.display = 'block';
+            document.getElementById('searchInput').value = '';
         }
     </script>
 </body>
